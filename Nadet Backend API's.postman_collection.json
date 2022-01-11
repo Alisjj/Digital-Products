@@ -1,0 +1,178 @@
+{
+	"info": {
+		"_postman_id": "9cc4cc0f-5bdd-48d5-8bc4-befa0771bc83",
+		"name": "Nadet Backend API's",
+		"description": "# Overview\n\ni used django rest auth for the authentication.\n\n# Authentication\n\nWhat is the preferred way of using the API?\n\n# Error Codes\n\nWhat errors and status codes can a user expect?\n\n# Rate limit\n\nIs there a limit to the number of requests a user can send?\n\nNo their is no limit",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "username",
+						"value": "saidu",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"muhammad\",\n    \"password\": \"mypass123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{webserver}}/auth/login/",
+					"host": [
+						"{{webserver}}"
+					],
+					"path": [
+						"auth",
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registration",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CSRFToken",
+						"value": "csrftoken",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"muhammad\",\n    \"password1\": \"mypass123\",\n    \"password2\": \"mypass123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/auth/registration/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"auth",
+						"registration",
+						""
+					]
+				},
+				"description": "The Registration Url"
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/auth/logout/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"auth",
+						"logout",
+						""
+					]
+				},
+				"description": "Log out Endpoint\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Password Reset",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"aliyusjj@yahoo.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/auth/password/reset/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"auth",
+						"password",
+						"reset",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Password Reset Confirm",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"new_password1\": \"sjj@1234\",\n    \"new_password2\": \"sjj@1234\",\n    \"uid\": \"MQ\",\n    \"token\": \"az2u4h-83c9583357e7bb4ee7f5587278dae76e\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/auth/password/reset/confirm/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"auth",
+						"password",
+						"reset",
+						"confirm",
+						""
+					]
+				},
+				"description": "``` javascript\n\n<Route path=\"reset/:uid/:token\" component={PasswordResetView}/>\n```\n\nAnd then in your react view you can get these values like `this.props.params.uid` and `this.props.params.token`"
+			},
+			"response": []
+		}
+	]
+}
