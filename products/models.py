@@ -36,7 +36,7 @@ class Ebook(models.Model):
     title = models.CharField(max_length=50)
     price = models.IntegerField(default=0)
     desc = models.TextField()
-    cover_image = models.ImageField()
+    cover_image = models.ImageField(blank=True, null=True)
     file = models.FileField(blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True)
 
