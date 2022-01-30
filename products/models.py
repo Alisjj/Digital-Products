@@ -25,7 +25,7 @@ class Lesson(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     title = models.CharField(max_length=20)
-    video_file = models.FileField()
+    video_file = models.FileField(blank=True, null=True)
 
     def __str__(self):
         return self.title
