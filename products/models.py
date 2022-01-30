@@ -1,5 +1,3 @@
-from pyexpat import model
-from unicodedata import category
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -39,6 +37,7 @@ class Ebook(models.Model):
     price = models.IntegerField(default=0)
     desc = models.TextField()
     cover_image = models.ImageField()
+    file = models.FileField(blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
