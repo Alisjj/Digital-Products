@@ -1,8 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from users.models import User
 
-class User(AbstractUser):
-    pass
 
 class Category(models.Model):
     name = models.CharField(max_length=30)
@@ -11,7 +9,7 @@ class Category(models.Model):
         return self.name
 
 class Course(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     price = models.IntegerField(default=0)
     desc = models.TextField()
@@ -22,7 +20,7 @@ class Course(models.Model):
         return self.title
 
 class Lesson(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     title = models.CharField(max_length=20)
     video_file = models.FileField(blank=True, null=True)
@@ -32,7 +30,7 @@ class Lesson(models.Model):
 
 
 class Ebook(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     price = models.IntegerField(default=0)
     desc = models.TextField()
