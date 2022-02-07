@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from products.models import Category, Course, Ebook, Lesson
+from products.models import Category, DigitalProduct
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -7,17 +7,8 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
-class CourseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Course
-        fields = '__all__'
 
-class LessonSerializer(serializers.ModelSerializer):
+class DigitalProductSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Lesson
-        fields = '__all__'
-
-class EbookSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ebook
+        model = DigitalProduct
         fields = '__all__'

@@ -1,86 +1,25 @@
-from products.models import Course, Ebook, Lesson
-from .serializers import CourseSerializer, EbookSerializer, LessonSerializer
+from products.models import Course, Lesson
 from rest_framework import generics
-from rest_framework import permissions
-
-class CourseListApiView(generics.ListAPIView):
-    queryset = Course.objects.all()
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = CourseSerializer
-
-class CourseCreateApiView(generics.CreateAPIView):
-    model = Course
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = CourseSerializer
-
-class CourseDetailApiView(generics.RetrieveAPIView):
-    queryset = Course.objects.all()
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = CourseSerializer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from products.models import DigitalProduct
+from .serializers import DigitalProductSerializer
+from django.http import Http404
+from rest_framework import permissions, status
 
 
-class CourseUpdateApiView(generics.UpdateAPIView):
-    queryset = Course.objects.all()
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = CourseSerializer
+class DigitalProductView(generics.ListCreateAPIView):
+    serializer_class = DigitalProductSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        queryset = DigitalProduct.objects.filter(user=user)
+        return queryset
 
-class CourseDeleteApiView(generics.DestroyAPIView):
-    queryset = Course.objects.all()
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = CourseSerializer
+class DigitalProductDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = DigitalProductSerializer
 
-class EbookListApiView(generics.ListAPIView):
-    queryset = Ebook.objects.all()
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = EbookSerializer
-
-class EbookCreateApiView(generics.CreateAPIView):
-    model = Ebook
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = EbookSerializer
-
-class EbookDetailApiView(generics.RetrieveAPIView):
-    queryset = Ebook.objects.all()
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = EbookSerializer
-
-
-class EbookUpdateApiView(generics.UpdateAPIView):
-    queryset = Ebook.objects.all()
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = EbookSerializer
-
-
-class EbookDeleteApiView(generics.DestroyAPIView):
-    queryset = Ebook.objects.all()
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = EbookSerializer
-
-
-class LessonListApiView(generics.ListAPIView):
-    queryset = Lesson.objects.all()
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = LessonSerializer
-
-class LessonCreateApiView(generics.CreateAPIView):
-    model = Lesson
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = LessonSerializer
-
-class LessonDetailApiView(generics.RetrieveAPIView):
-    queryset = Lesson.objects.all()
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = LessonSerializer
-
-
-class LessonUpdateApiView(generics.UpdateAPIView):
-    queryset = Lesson.objects.all()
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = LessonSerializer
-
-
-class LessonDeleteApiView(generics.DestroyAPIView):
-    queryset = Lesson.objects.all()
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = LessonSerializer
+    def get_queryset(self):
+        user = self.request.user
+        queryset = DigitalProduct.objects.filter(user=user)
+        return queryset
