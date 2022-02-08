@@ -1,12 +1,11 @@
 from telnetlib import SE
 from django.contrib import admin
 from .models import (
-    Category, Uploads, UploadFile, Variant, 
+    Category, UploadFile, Variant, 
     DigitalProduct, Ticket, Service, Course, Section, Lesson, 
     LessonDetail, PreviewVideo)
 
 admin.site.register(Category)
-admin.site.register(Uploads)
 admin.site.register(UploadFile)
 admin.site.register(Variant)
 admin.site.register(DigitalProduct)
