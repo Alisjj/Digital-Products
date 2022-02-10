@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from products.models import Category, Course, Ebook, Lesson
+from products.models import Category, Course, DigitalProduct, Service, Ticket, UploadFile
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -7,17 +7,36 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
+
+class DigitalProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DigitalProduct
+        fields = '__all__'
+
+
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
 
-class LessonSerializer(serializers.ModelSerializer):
+class TicketSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Lesson
+        model = Ticket
         fields = '__all__'
 
-class EbookSerializer(serializers.ModelSerializer):
+
+class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Ebook
+        model = Service
+        fields = '__all__'
+
+class Course(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = '__all__'
+
+
+class UploadFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UploadFile
         fields = '__all__'

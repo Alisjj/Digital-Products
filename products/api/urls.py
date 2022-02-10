@@ -1,21 +1,34 @@
 from . import views
+from rest_framework.urlpatterns import format_suffix_patterns
 from django.urls import path
 
+
 urlpatterns = [
-    path('courses/', views.CourseListApiView.as_view()),
-    path('courses/<int:pk>/', views.CourseDetailApiView.as_view()),
-    path('courses/create/', views.CourseCreateApiView.as_view()),
-    path('courses/<int:pk>/update/', views.CourseUpdateApiView.as_view()),
-    path('courses/<int:pk>/delete/', views.CourseDeleteApiView.as_view()),
-    path('ebook/', views.EbookListApiView.as_view()),
-    path('ebook/create/', views.EbookCreateApiView.as_view()),
-    path('ebook/<int:pk>/', views.EbookDetailApiView.as_view()),
-    path('ebook/<int:pk>/update/', views.EbookUpdateApiView.as_view()),
-    path('ebook/<int:pk>/delete/', views.EbookDeleteApiView.as_view()),
-    path('lesson/', views.LessonListApiView.as_view()),
-    path('lesson/create/', views.LessonCreateApiView.as_view()),
-    path('lesson/<int:pk>/', views.LessonDetailApiView.as_view()),
-    path('lesson/<int:pk>/update/', views.LessonUpdateApiView.as_view()),
-    path('lesson/<int:pk>/delete/', views.LessonDeleteApiView.as_view()),
+    path("digital-products/", views.DigitalProductListView.as_view()),
+    path("digital-products/create/", views.DigitalProductCreateView.as_view()),
+    path("digital-products/<int:pk>/", views.DigitalProductDetail.as_view()),
+    path("digital-products/<int:pk>/update/", views.DigitalProductUpdate.as_view()),
+    path("digital-products/<int:pk>/delete/", views.DigitalProductDestory.as_view()),
+    path("categories/", views.CategoryView.as_view()),
+    path("categories/<int:pk>/", views.CategoryDetail.as_view()),
+    path("tickets/", views.TicketListView.as_view()),
+    path("tickets/create/", views.TicketCreateView.as_view()),
+    path("tickets/<int:pk>/", views.TicketDetail.as_view()),
+    path("tickets/<int:pk>/update/", views.TicketUpdate.as_view()),
+    path("tickets/<int:pk>/delete/", views.TicketDestroy.as_view()),
+    path("services/", views.ServiceListView.as_view()),
+    path("services/create/", views.ServiceCreateView.as_view()),
+    path("services/<int:pk>/", views.ServiceDetail.as_view()),
+    path("services/<int:pk>/update/", views.ServiceUpdate.as_view()),
+    path("services/<int:pk>/delete/", views.ServiceDestroy.as_view()),
+    path("courses/", views.CourseListView.as_view()),
+    path("courses/create/", views.CourseCreateView.as_view()),
+    path("courses/<int:pk>/", views.CourseDetail.as_view()),
+    path("courses/<int:pk>/update/", views.CourseUpdate.as_view()),
+    path("courses/<int:pk>/delete/", views.CourseDetail.as_view()),
+    path("files/", views.UploadFileView.as_view()),
+    path("files/<int:pk>/", views.UploadFileDetailView.as_view()),
 
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)
