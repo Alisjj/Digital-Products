@@ -14,19 +14,12 @@ class Category(models.Model):
         return self.name
 
 class UploadFile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     file = models.FileField(upload_to="media")
 
     def __str__(self):
         return "{}".format(os.path.basename(self.file.name))
 
-class Variant(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=220)
-    required = models.BooleanField(default=False)
-    show_img = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.name
 
 
 class DigitalProduct(models.Model):
@@ -38,7 +31,6 @@ class DigitalProduct(models.Model):
     about = models.TextField(null=True, blank=True)
     preoder_date = models.DateTimeField(null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
     file = models.ForeignKey(UploadFile, related_name="product_file", on_delete=models.SET_NULL, null=True, blank=True)
     
     def __str__(self):
