@@ -3,9 +3,20 @@ from products.models import Category, Course, DigitalProduct, Service, Ticket, U
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    courses = serializers.StringRelatedField(many=True, read_only=True)
+    tickets = serializers.StringRelatedField(many=True, read_only=True)
+    digital_products = serializers.StringRelatedField(many=True, read_only=True)
+    services = serializers.StringRelatedField(many=True, read_only=True)
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = (
+            'user',
+            'name',
+            'courses',
+            'tickets',
+            'digital_products',
+            'services',
+        )
 
 
 class DigitalProductSerializer(serializers.ModelSerializer):
@@ -40,3 +51,9 @@ class UploadFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UploadFile
         fields = '__all__'
+
+
+# class ClassSectionSerializer(serializers.ModelSerializer):
+
+#     class Meta:
+#         model

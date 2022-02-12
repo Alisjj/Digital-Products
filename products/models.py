@@ -30,7 +30,7 @@ class DigitalProduct(models.Model):
     original_price = models.IntegerField(default=0, null=True, blank=True)
     about = models.TextField(null=True, blank=True)
     preoder_date = models.DateTimeField(null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='digital_products')
     file = models.ForeignKey(UploadFile, related_name="product_file", on_delete=models.SET_NULL, null=True, blank=True)
     
     def __str__(self):
@@ -45,7 +45,7 @@ class Ticket(models.Model):
     original_price = models.IntegerField(default=0, null=True, blank=True)
     about = models.TextField(null=True, blank=True)
     quantity = models.IntegerField(default=0)   
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='tickets')
 
     def __str__(self):
         return self.name
@@ -56,7 +56,7 @@ class Service(models.Model):
     price = models.IntegerField(default=0)
     original_price = models.IntegerField(default=0, null=True, blank=True)
     about = models.TextField(null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='services')
 
     def __str__(self):
         return self.name
@@ -69,7 +69,7 @@ class Course(models.Model):
     price = models.IntegerField(default=0)
     original_price = models.IntegerField(default=0, null=True, blank=True)
     about = models.TextField(null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='courses')
     preorder_date = models.DateTimeField(null=True, blank=True)
     publish = models.BooleanField(default=False)
 
