@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from products.models import Category, Course, DigitalProduct, Service, Ticket, UploadFile
+from products.models import Category, Course, DigitalProduct, Section, Service, Ticket, UploadFile
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -53,7 +53,8 @@ class UploadFileSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# class ClassSectionSerializer(serializers.ModelSerializer):
+class SectionSerializer(serializers.ModelSerializer):
 
-#     class Meta:
-#         model
+    class Meta:
+        model = Section
+        fields = '__all__'
