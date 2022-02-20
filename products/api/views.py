@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from products.models import DigitalProduct
-from .serializers import CategorySerializer, CourseSerializer, DigitalProductSerializer, ServiceSerializer, TicketSerializer, UploadFileSerializer
+from .serializers import CategorySerializer, CourseSerializer, DigitalProductSerializer, SectionSerializer, ServiceSerializer, TicketSerializer, UploadFileSerializer
 from django.http import Http404
 from rest_framework import permissions, status
 

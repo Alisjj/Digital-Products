@@ -101,6 +101,16 @@ DATABASES = {
     }
 }
 
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False, # IMPORTANT
+    'BLACKLIST_AFTER_ROTATION': False, # IMPORTANT
+    'UPDATE_LAST_LOGIN': True,
+}
+
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -115,6 +125,40 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
     ]
+}
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+       ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+    
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'name',
+            'name_format',
+            'picture',
+            'short_name'
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': 'path.to.callable',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v7.0',
+    }
 }
 
 REST_SESSION_LOGIN = False
@@ -189,6 +233,9 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+# SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+# SOCIALACCOUNT_EMAIL_REQUIRED = False
+
 LOGIN_URL = 'http://localhost:8000/auth/login'
 
 AUTHENTICATION_BACKENDS = [
