@@ -78,20 +78,20 @@ class Course(models.Model):
 
 class Section(models.Model):
     name =  models.CharField(max_length=120)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="sections")
 
     def __str__(self):
         return self.name
 
 class Lesson(models.Model):
     name = models.CharField(max_length=120)
-    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name="lessons")
 
     def __str__(self):
         return self.name
 
 class LessonDetail(models.Model):
-    lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE)
+    lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE, related_name="lesson_detail")
     file = models.ForeignKey(UploadFile, on_delete=models.SET_NULL, null=True, blank=True)
     file_url = models.URLField(blank=True)
     description = models.TextField(blank=True, null=True)
