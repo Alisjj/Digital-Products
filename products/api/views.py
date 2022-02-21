@@ -1,9 +1,9 @@
-from products.models import Category, Course, Lesson, Service, Ticket, UploadFile
+from products.models import Category, Course, Lesson, LessonDetail, Section, Service, Ticket, UploadFile
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from products.models import DigitalProduct
-from .serializers import CategorySerializer, CourseSerializer, DigitalProductSerializer, SectionSerializer, ServiceSerializer, TicketSerializer, UploadFileSerializer
+from .serializers import CategorySerializer, CourseSerializer, DigitalProductSerializer, LessonDetailSerializer, LessonSerializer, SectionSerializer, ServiceSerializer, TicketSerializer, UploadFileSerializer
 from django.http import Http404
 from rest_framework import permissions, status
 
@@ -177,3 +177,28 @@ class UploadFileDetailView(generics.RetrieveUpdateDestroyAPIView):
         queryset = UploadFile.objects.filter(user=user)
         return queryset
     
+class SectionView(generics.ListCreateAPIView):
+    serializer_class = SectionSerializer
+    queryset = Section.objects.all()
+
+class SectionEdit(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = SectionSerializer
+    queryset = Section.objects.all()
+
+
+class LessonView(generics.ListCreateAPIView):
+    serializer_class = LessonSerializer
+    queryset = Lesson.objects.all()
+
+
+class LessonEditView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = LessonSerializer
+    queryset = Lesson.objects.all()
+
+class LessonDetailView(generics.ListCreateAPIView):
+    serializer_class = LessonDetailSerializer
+    queryset = LessonDetail.objects.all()
+
+class LessonDetailEditView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = LessonDetailSerializer
+    queryset = LessonDetail.objects.all()

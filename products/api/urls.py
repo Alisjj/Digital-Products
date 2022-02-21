@@ -26,6 +26,12 @@ urlpatterns = [
     path("courses/<int:pk>/", views.CourseDetail.as_view()),
     path("courses/<int:pk>/update/", views.CourseUpdate.as_view()),
     path("courses/<int:pk>/delete/", views.CourseDetail.as_view()),
+    path("courses/sections/", views.SectionView.as_view(), name="section_list"),
+    path("courses/sections/<int:pk>/", views.SectionEdit.as_view(), name="section_edit"),
+    path("courses/sections/lessons/", views.LessonView.as_view(), name="lesson_list"),
+    path("courses/sections/lessons/<int:pk>/", views.LessonEditView.as_view(), name="lesson_edit"),
+    path("courses/sections/lessons/lesson-detail", views.LessonDetailView.as_view(), name="lesson-detail-list"),
+    path("courses/sections/lessons/lesson-detail/<int:pk>/", views.LessonDetailEditView.as_view(), name="lesson-detail-edit"),
     path("files/", views.UploadFileView.as_view()),
     path("files/<int:pk>/", views.UploadFileDetailView.as_view()),
 
