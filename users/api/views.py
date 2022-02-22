@@ -60,7 +60,7 @@ class CustomPasswordResetView(generics.GenericAPIView):
                 recipient_list=[user.email],
             )
 
-            return Response({'detail':'Reset Password Email has been sent'}, status=status.HTTP_200_OK)
+        return Response({'detail':'Reset Password Email has been sent'}, status=status.HTTP_200_OK)
 
 
 class PasswordResetConfirmView(generics.GenericAPIView):
