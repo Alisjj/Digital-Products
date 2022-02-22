@@ -10,6 +10,7 @@ from rest_framework import permissions
 from dj_rest_auth.registration.views import SocialLoginView
 from dj_rest_auth.social_serializers import TwitterLoginSerializer
 
+from nadet import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_bytes, smart_str, force_str, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -56,7 +57,7 @@ class CustomPasswordResetView(generics.GenericAPIView):
             send_mail(
                 subject="You are invited to be an agent",
                 message=email_body,
-                from_email="aliyussajjds@gmail.com",
+                from_email=getattr(settings, 'DEFAULT_FROM_EMAIL'),
                 recipient_list=[user.email],
             )
 
