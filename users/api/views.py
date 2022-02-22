@@ -56,7 +56,7 @@ class CustomPasswordResetView(generics.GenericAPIView):
             send_mail(
                 subject="You are invited to be an agent",
                 message=email_body,
-                from_email="admin@test",
+                from_email="aliyussajjds@gmail.com",
                 recipient_list=[user.email],
             )
 
