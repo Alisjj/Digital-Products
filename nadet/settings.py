@@ -72,7 +72,7 @@ ROOT_URLCONF = 'nadet.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],
+        'DIRS': [ os.path.join(BASE_DIR, 'users/templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -168,10 +168,11 @@ JWT_AUTH_REFRESH_COOKIE = 'jwt-refresh-token'  # to anything
 JWT_AUTH_SECURE = True
 
 REST_AUTH_REGISTER_SERIALIZERS = {
-    'REGISTER_SERIALIZER': 'users.api.serializers.CustomRegistration'
+    'REGISTER_SERIALIZER': 'users.api.serializers.CustomRegistration',
 }
 
 REST_AUTH_SERIALIZERS = {
+    
     'USER_DETAILS_SERIALIZER': 'users.api.serializers.CustomUserDetailsSerializer',
 }
 
@@ -233,6 +234,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+FRONTEND_HOST = 'http://localhost:3000'
 # SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 # SOCIALACCOUNT_EMAIL_REQUIRED = False
 
