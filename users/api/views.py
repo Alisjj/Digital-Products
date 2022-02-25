@@ -64,28 +64,27 @@ class CustomPasswordResetView(generics.GenericAPIView):
         return Response({'detail':'Reset Password Email has been sent'}, status=status.HTTP_200_OK)
 
 
-class PasswordResetConfirmView(generics.GenericAPIView):
-    permission_classes = (permissions.AllowAny, )
-    def get(self, request, uidb64, token):
-        try:
-            id = smart_str(urlsafe_base64_decode(uidb64))
-            user = User.objects.get(id=id)
+# class PasswordResetConfirmView(generics.GenericAPIView):
+#     permission_classes = (permissions.AllowAny, )
+#     def get(self, request, uidb64, token):
+#         try:
+#             id = smart_str(urlsafe_base64_decode(uidb64))
+#             user = User.objects.get(id=id)
 
-            if not PasswordResetTokenGenerator().check_token(user, token):
-                return Response({'error': 'token is invalid or expired'}, status=status.HTTP_401_UNAUTHORIZED)
+#             if not PasswordResetTokenGenerator().check_token(user, token):
+#                 return Response({'error': 'token is invalid or expired'}, status=status.HTTP_401_UNAUTHORIZED)
 
-            return Response({'success': True, 'message': 'Valid Creadentials', 'uidb64': uidb64,'token': token}, status=status.HTTP_200_OK)
+#             return Response({'success': True, 'message': 'Valid Creadentials', 'uidb64': uidb64,'token': token}, status=status.HTTP_200_OK)
 
-        except DjangoUnicodeDecodeError as identifier:
-            return Response({'error': 'token is invalid or expired'}, status=status.HTTP_401_UNAUTHORIZED)
+#         except DjangoUnicodeDecodeError as identifier:
+#             return Response({'error': 'token is invalid or expired'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-class PasswordChangeView(generics.GenericAPIView):
+class PasswordResetChangeView(generics.GenericAPIView):
     serializer_class = PasswordChangeSerializer
     permission_classes = (permissions.AllowAny,)
 
     def patch(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        # serializer.save()
         return Response({'message': 'New password has been set'}, status=status.HTTP_200_OK)
