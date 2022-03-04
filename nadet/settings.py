@@ -221,6 +221,13 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 CORS_ALLOW_ALL_ORIGINS = True
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://localhost:3000",
+    "http://127.0.0.1:8000",
+    "https://nadet.herokuapp.com",
+    "https://nadetapi.herokuapp.com"
+    ]
 
 # CORS_ALLOWED_ORIGINS  = (
 #     "http://localhost:8000",
