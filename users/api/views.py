@@ -29,7 +29,7 @@ class TwitterLogin(SocialLoginView):
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
-    callback_url = "CALLBACK_URL_YOU_SET_ON_GOOGLE"
+    callback_url = "https://nadet.herokuapp.com/"
     client_class = OAuth2Client
 
 

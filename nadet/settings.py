@@ -261,7 +261,7 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     X_FRAME_OPTIONS = "DENY"
 
-    ALLOWED_HOSTS = ['https://nadetapi.herokuapp.com/']
+    ALLOWED_HOSTS = ['https://nadetapi.herokuapp.com/', 'https://nadet.herokuapp.com/']
     LOGIN_URL = 'https://nadetapi.herokuapp.com/auth/login'
 
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
