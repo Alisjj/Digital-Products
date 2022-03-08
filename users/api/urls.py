@@ -8,6 +8,7 @@ from users.api.views import FacebookLogin, GoogleLogin, TwitterLogin
 
 urlpatterns = [
     path('', include('dj_rest_auth.urls')),
+    path('allauth-accounts/', include('allauth.urls'), name='socialaccount_signup'),
     path('password-reset/', CustomPasswordResetView.as_view(), name="password_reset"),
     path('password-reset/change/',
         PasswordResetChangeView.as_view(), name='password_reset_dont'
