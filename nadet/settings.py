@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.twitter',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.linkedin_oauth2',
+
     'rest_framework',
     'rest_framework.authtoken',
     'dj_rest_auth',
@@ -137,6 +139,21 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
         }
     },
+    'linkedin': {
+        # 'HEADERS': {
+        #     'x-li-src': 'msdk'
+        # },
+        'SCOPE': [
+            'r_basicprofile',
+            'r_emailaddress'
+        ],
+        'PROFILE_FIELDS': [
+            'id',
+            'email-address',
+            'picture-url',
+            'public-profile-url',
+        ]
+    }
     
 }
 
