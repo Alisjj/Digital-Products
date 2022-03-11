@@ -144,7 +144,7 @@ SOCIALACCOUNT_PROVIDERS = {
         #     'x-li-src': 'msdk'
         # },
         'SCOPE': [
-            'r_basicprofile',
+            'r_liteprofile',
             'r_emailaddress'
         ],
         'PROFILE_FIELDS': [

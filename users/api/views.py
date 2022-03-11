@@ -3,7 +3,7 @@ from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.linkedin_oauth2.views import LinkedInOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from .serializers import CodeExchangeSerializer, PasswordResetSerializer, PasswordChangeSerializer
+from .serializers import PasswordResetSerializer, PasswordChangeSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
@@ -27,30 +27,9 @@ class FacebookLogin(SocialLoginView):
 
 class LinkedInLogin(SocialLoginView):
     adapter_class = LinkedInOAuth2Adapter
-    client_class = OAuth2Client
+    client_class = OAuth2Client 
+    callback_url = "https://nadet.herokuapp.com/linkedin"
 
-class ExchangeCode(generics.GenericAPIView):
-    permission_classes = (permissions.AllowAny,)
-    serializer_class = CodeExchangeSerializer
-
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-
-        code = request.data['code']
-        url = "https://www.linkedin.com/oauth/v2/accessToken"
-        obj = {
-            "grant_type": "authorization_code",
-            "code": code,
-            "client_id": "86dmvxfmtwbn9o",
-            "client_secret": "lj03uJaJnerJQsOp",
-            "redirect_uri": "https://nadet.herokuapp.com/linkedin"
-        }
-        auth = requests.post(url, data=obj)
-
-        # print(auth.content)
-
-
-        return Response(auth.json())
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter

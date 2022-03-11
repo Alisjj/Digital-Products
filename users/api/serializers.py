@@ -38,12 +38,6 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
             'referral_url',
         )
         read_only_fields = ('pk', 'email', 'profile_link', 'referral_url')
-
-class CodeExchangeSerializer(serializers.Serializer):
-    code = serializers.CharField()
-
-    class Meta:
-        fields = ('code',)
     
 
 class PasswordResetSerializer(serializers.Serializer):
