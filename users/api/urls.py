@@ -4,10 +4,11 @@ from dj_rest_auth.registration.views import VerifyEmailView, ConfirmEmailView
 from .views import CustomPasswordResetView, PasswordResetChangeView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from users.api.views import FacebookLogin, GoogleLogin, TwitterLogin
+from users.api.views import FacebookLogin, GoogleLogin, LinkedInLogin
 
 urlpatterns = [
     path('', include('dj_rest_auth.urls')),
+    path('allauth-accounts/', include('allauth.urls'), name='socialaccount_signup'),
     path('password-reset/', CustomPasswordResetView.as_view(), name="password_reset"),
     path('password-reset/change/',
         PasswordResetChangeView.as_view(), name='password_reset_dont'
@@ -17,6 +18,6 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name="token_refresh"),
     path('verify-email', VerifyEmailView.as_view(), name='account_email_verification_sent'),
     path('facebook/', FacebookLogin.as_view(), name='fb_login'),
-    path('twitter/', TwitterLogin.as_view(), name='tw_login'),
+    path('linkedin/', LinkedInLogin.as_view(), name='tw_login'),
     path('google/', GoogleLogin.as_view(), name='g_login'),
 ]

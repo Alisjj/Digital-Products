@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.twitter',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.linkedin_oauth2',
+
     'rest_framework',
     'rest_framework.authtoken',
     'dj_rest_auth',
@@ -139,28 +141,22 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
         }
     },
-    
-    'facebook': {
-        'METHOD': 'oauth2',
-        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
-        'SCOPE': ['email', 'public_profile'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'INIT_PARAMS': {'cookie': True},
-        'FIELDS': [
-            'id',
-            'first_name',
-            'last_name',
-            'middle_name',
-            'name',
-            'name_format',
-            'picture',
-            'short_name'
+    'linkedin': {
+        # 'HEADERS': {
+        #     'x-li-src': 'msdk'
+        # },
+        'SCOPE': [
+            'r_liteprofile',
+            'r_emailaddress'
         ],
-        'EXCHANGE_TOKEN': True,
-        'LOCALE_FUNC': 'path.to.callable',
-        'VERIFIED_EMAIL': False,
-        'VERSION': 'v7.0',
+        'PROFILE_FIELDS': [
+            'id',
+            'email-address',
+            'picture-url',
+            'public-profile-url',
+        ]
     }
+    
 }
 
 REST_SESSION_LOGIN = False
@@ -222,7 +218,14 @@ STATIC_ROOT = "static_root"
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
-CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_WHITELIST  = (
+    "http://localhost:8000",
+    "http://localhost:3000",
+    "http://127.0.0.1:8000",
+    "https://nadet.herokuapp.com",
+    "https://nadetapi.herokuapp.com",
+)
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -263,7 +266,7 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     X_FRAME_OPTIONS = "DENY"
 
-    ALLOWED_HOSTS = ['https://nadetapi.herokuapp.com/']
+    ALLOWED_HOSTS = ['https://nadetapi.herokuapp.com/', 'https://nadet.herokuapp.com/']
     LOGIN_URL = 'https://nadetapi.herokuapp.com/auth/login'
 
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

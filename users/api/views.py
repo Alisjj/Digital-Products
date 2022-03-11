@@ -1,6 +1,7 @@
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.linkedin_oauth2.views import LinkedInOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from .serializers import PasswordResetSerializer, PasswordChangeSerializer
 from rest_framework.response import Response
@@ -9,6 +10,7 @@ from rest_framework import generics
 from rest_framework import permissions
 from dj_rest_auth.registration.views import SocialLoginView
 from dj_rest_auth.social_serializers import TwitterLoginSerializer
+import requests
 
 from nadet import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -23,13 +25,15 @@ from users.models import User
 class FacebookLogin(SocialLoginView):
     adapter_class = FacebookOAuth2Adapter
 
-class TwitterLogin(SocialLoginView):
-    serializer_class = TwitterLoginSerializer
-    adapter_class = TwitterOAuthAdapter
+class LinkedInLogin(SocialLoginView):
+    adapter_class = LinkedInOAuth2Adapter
+    client_class = OAuth2Client 
+    callback_url = "https://nadet.herokuapp.com/linkedin"
+
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
-    callback_url = "CALLBACK_URL_YOU_SET_ON_GOOGLE"
+    callback_url = "https://nadet.herokuapp.com/"
     client_class = OAuth2Client
 
 
