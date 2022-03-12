@@ -2,15 +2,14 @@ from rest_framework import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.db import transaction
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.response import Response
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_bytes, smart_str, force_str, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-
+from django.contrib.auth import get_user_model
 
 from django.conf import settings
 
-from users.models import User
+User = get_user_model()
 
 class CustomRegistration(RegisterSerializer):
     full_name = serializers.CharField(max_length=120)

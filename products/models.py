@@ -1,7 +1,9 @@
+from django.contrib.auth import get_user_model
 from django.db import models
-from users.models import User
 import os
 
+# User = get_user_model()
+# User = 'alsajjad'
 
 class Category(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -22,9 +24,9 @@ class UploadFile(models.Model):
 
 
 
-class DigitalProduct(models.Model):
+class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ForeignKey(UploadFile, related_name="product_image",on_delete=models.SET_NULL, null=True, blank=True)
+    cov = models.ForeignKey(UploadFile, related_name="product_image",on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=230)
     price = models.IntegerField(default=0)
     original_price = models.IntegerField(default=0, null=True, blank=True)
@@ -36,30 +38,6 @@ class DigitalProduct(models.Model):
     def __str__(self):
         return self.name
 
-
-class Ticket(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ForeignKey(UploadFile, on_delete=models.SET_NULL, null=True, blank=True)
-    name = models.CharField(max_length=230)
-    price = models.IntegerField(default=0)
-    original_price = models.IntegerField(default=0, null=True, blank=True)
-    about = models.TextField(null=True, blank=True)
-    quantity = models.IntegerField(default=0)   
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='tickets')
-
-    def __str__(self):
-        return self.name
-class Service(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ForeignKey(UploadFile, on_delete=models.SET_NULL, null=True, blank=True)
-    name = models.CharField(max_length=230)
-    price = models.IntegerField(default=0)
-    original_price = models.IntegerField(default=0, null=True, blank=True)
-    about = models.TextField(null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='services')
-
-    def __str__(self):
-        return self.name
 
 
 class Course(models.Model):
