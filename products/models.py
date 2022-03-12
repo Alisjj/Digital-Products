@@ -24,17 +24,17 @@ class UploadFile(models.Model):
 
 
 class Product(models.Model):
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name="products")
     cover = models.ForeignKey(UploadFile, related_name="product_image",on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=230)
     description = models.TextField()
 
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='digital_products')
     content = models.ForeignKey(UploadFile, related_name="product_file", on_delete=models.SET_NULL, null=True, blank=True)
     content_url = models.URLField(null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='digital_products')
 
 
-
+    active = models.BooleanField(default=False)
     price = models.IntegerField(default=0)
     original_price = models.IntegerField(default=0, null=True, blank=True)
     preoder_date = models.DateTimeField(null=True, blank=True)

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from users.api.views import PasswordResetConfirmView
-from products.api.views import ProductListView, UserProductListView
+from products.api.views import ProductListView, UserProductListView, ProductCreateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -16,5 +16,7 @@ urlpatterns = [
 
 
     path('discover/', ProductListView.as_view(), name="discover"),
-    path('product/', UserProductListView.as_view(), name="user-products")
+    path('products/', UserProductListView.as_view(), name="user-products"),
+    path('products/create/', ProductCreateView.as_view(), name="product-create")
+
 ]

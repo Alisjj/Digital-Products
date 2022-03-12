@@ -23,12 +23,11 @@ class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class ProductListView(generics.ListAPIView):
     serializer_class = ProductSerializer
-    permission_classes = (permissions.AllowAny, )
-    queryset = Product.objects.all()
+    queryset = Product.objects.filter(active=True)
 
 class ProductDetailView(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
-    quesryset = Product.objects.all()
+    queryset = Product.objects.all()
 
 
 class UserProductListView(generics.ListAPIView):
@@ -36,4 +35,24 @@ class UserProductListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Product.objects.filter(user=self.request.user)
+
+
+class ProductUpdateView(generics.UpdateAPIView):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        return Product.objects.filter(user=self.request.user)
+
+class ProductDestroy(generics.DestroyAPIView):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        return Product.objects.filter(user=self.request.user)
+
+class ProductCreateView(generics.CreateAPIView):
+    serializer_class = ProductSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+        return super().perform_create(serializer)
 

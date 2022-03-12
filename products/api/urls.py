@@ -5,7 +5,10 @@ from django.urls import path
 
 
 urlpatterns = [
-    path('<int:id>/', views.ProductDetailView.as_view(), name = 'product_detail')
+    path('<int:pk>/', views.ProductDetailView.as_view(), name = 'product-detail'),
+    path('<int:pk>/update/', views.ProductUpdateView.as_view(), name = 'product-detail'),
+    path('<int:pk>/delete/', views.ProductDestroy.as_view(), name = 'product-detail'),
+    
 
 ]
 
