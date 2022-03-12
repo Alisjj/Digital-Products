@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.mail import send_mail
-from django.urls import reverse
+from products.models import Product
 # from products.models import Course
 class User(AbstractUser):
     profile_pic = models.ImageField()
@@ -12,3 +11,13 @@ class User(AbstractUser):
     profile_link = models.URLField(max_length=150)
     referral_url = models.URLField(max_length=150)
 
+
+class UserLibrary(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    products = models.ManyToManyField(Product, blank=True)
+
+    class Meta:
+        verbose_name_plural = "UserLibraries"
+
+    def __str__(self):
+        return self.user.email

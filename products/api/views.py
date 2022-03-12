@@ -1,6 +1,6 @@
-from products.models import Category, Course, Lesson, LessonDetail, UploadFile
+from products.models import Category, Course, Lesson, LessonDetail, Product, UploadFile
 from rest_framework import generics
-from .serializers import CategorySerializer, CourseSerializer, LessonDetailSerializer, LessonSerializer,  UploadFileSerializer
+from .serializers import CategorySerializer, CourseSerializer, ProductSerializer
 from rest_framework import permissions
 
 class CategoryView(generics.ListCreateAPIView):
@@ -21,74 +21,19 @@ class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
         return queryset
 
 
-class CourseListView(generics.ListAPIView):
+class ProductListView(generics.ListAPIView):
+    serializer_class = ProductSerializer
     permission_classes = (permissions.AllowAny, )
-    serializer_class = CourseSerializer
-    queryset = Course.objects.all()
+    queryset = Product.objects.all()
 
-class CourseCreateView(generics.CreateAPIView):
-    serializer_class = CourseSerializer
+class ProductDetailView(generics.RetrieveAPIView):
+    serializer_class = ProductSerializer
+    quesryset = Product.objects.all()
 
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Course.objects.filter(user=user)
-        return queryset
 
-class CourseDetail(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = CourseSerializer
+class UserProductListView(generics.ListAPIView):
+    serializer_class = ProductSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        queryset = Course.objects.filter(user=user)
-        return queryset
+        return Product.objects.filter(user=self.request.user)
 
-class CourseUpdate(generics.UpdateAPIView):
-    serializer_class = CourseSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Course.objects.filter(user=user)
-        return queryset
-class CourseDestroy(generics.DestroyAPIView):
-    serializer_class = CourseSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Course.objects.filter(user=user)
-        return queryset
-
-
-class UploadFileView(generics.ListCreateAPIView):
-    serializer_class = UploadFileSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = UploadFile.objects.filter(user=user)
-        return queryset
-
-class UploadFileDetailView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = UploadFileSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = UploadFile.objects.filter(user=user)
-        return queryset
-    
-
-
-class LessonView(generics.ListCreateAPIView):
-    serializer_class = LessonSerializer
-    queryset = Lesson.objects.all()
-
-
-class LessonEditView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = LessonSerializer
-    queryset = Lesson.objects.all()
-
-class LessonDetailView(generics.ListCreateAPIView):
-    serializer_class = LessonDetailSerializer
-    queryset = LessonDetail.objects.all()
-
-class LessonDetailEditView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = LessonDetailSerializer
-    queryset = LessonDetail.objects.all()

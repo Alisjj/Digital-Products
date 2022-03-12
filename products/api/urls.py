@@ -1,16 +1,11 @@
+from itertools import product
 from . import views
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.urls import path
 
 
 urlpatterns = [
-    path("courses/", views.CourseListView.as_view()),
-    path("courses/create/", views.CourseCreateView.as_view()),
-    path("courses/<int:pk>/", views.CourseDetail.as_view()),
-    path("courses/<int:pk>/update/", views.CourseUpdate.as_view()),
-    path("courses/<int:pk>/delete/", views.CourseDetail.as_view()),
-    path("files/", views.UploadFileView.as_view()),
-    path("files/<int:pk>/", views.UploadFileDetailView.as_view()),
+    path('<int:id>/', views.ProductDetailView.as_view(), name = 'product_detail')
 
 ]
 
