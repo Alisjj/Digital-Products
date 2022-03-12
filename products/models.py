@@ -1,10 +1,10 @@
 from django.db import models
-from users.models import User
 import os
 
 
+
 class Category(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
 
     class Meta:
@@ -14,7 +14,7 @@ class Category(models.Model):
         return self.name
 
 class UploadFile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     file = models.FileField(upload_to="media")
 
     def __str__(self):
@@ -23,7 +23,7 @@ class UploadFile(models.Model):
 
 
 class DigitalProduct(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     image = models.ForeignKey(UploadFile, related_name="product_image",on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=230)
     price = models.IntegerField(default=0)
@@ -38,7 +38,7 @@ class DigitalProduct(models.Model):
 
 
 class Ticket(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     image = models.ForeignKey(UploadFile, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=230)
     price = models.IntegerField(default=0)
@@ -50,7 +50,7 @@ class Ticket(models.Model):
     def __str__(self):
         return self.name
 class Service(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     image = models.ForeignKey(UploadFile, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=230)
     price = models.IntegerField(default=0)
@@ -63,7 +63,7 @@ class Service(models.Model):
 
 
 class Course(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     image = models.ForeignKey(UploadFile, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=230)
     price = models.IntegerField(default=0)
