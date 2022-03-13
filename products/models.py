@@ -71,3 +71,36 @@ class LessonDetail(models.Model):
     def __str__(self):
         return self.lesson.name
 
+
+
+class Transaction(models.Model):
+    """Represents a transaction for a specific payment type and user"""
+    user = models.ForeignKey(
+        "users.User", related_name="flw_transactions", on_delete=models.CASCADE
+    )
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    tx_ref = models.CharField(max_length=100)
+    flw_ref = models.CharField(max_length=100)
+    device_fingerprint = models.CharField(max_length=100)
+    amount = models.DecimalField(decimal_places=2, max_digits=9)
+    currency = models.CharField(max_length=3)
+    charged_amount = models.DecimalField(decimal_places=2, max_digits=9)
+    app_fee = models.DecimalField(decimal_places=2, max_digits=9)
+    merchant_fee = models.DecimalField(decimal_places=2, max_digits=9)
+    processor_response = models.CharField(max_length=100)
+    auth_model = models.CharField(max_length=100)
+    ip = models.CharField(max_length=100)
+    narration = models.CharField(max_length=100)
+    status = models.CharField(max_length=50)
+    payment_type = models.CharField(max_length=50)
+    created_at = models.DateTimeField(
+        help_text="Created datetime received from Flutterwave"
+    )
+    account_id = models.PositiveIntegerField()
+
+    class Meta:
+        verbose_name = "Transaction"
+        verbose_name_plural = "Transactions"
+
+    def __str__(self):
+        return self.tx_ref

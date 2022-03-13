@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from products.models import Category, Course, Lesson, LessonDetail, Product, Section, UploadFile
+from products.models import Category, Course, Lesson, LessonDetail, Product, Section, Transaction, UploadFile
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -43,6 +43,34 @@ class ProductSerializer(serializers.ModelSerializer):
                 'price',
                 'original_price',
                 'preoder_date',
+        )
+
+
+class CustomerSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    phonenumber = serializers.CharField()
+    name = serializers.CharField(max_length=100)
+
+
+# class MetaSerializer(serializers.Serializer):
+#     email = serializers.EmailField()
+#     name = serializers.CharField(max_length=100)
+
+class TransactionSerializer(serializers.ModelSerializer):
+
+    customer = CustomerSerializer()
+    redirect_url = serializers.URLField()
+
+
+    class Meta:
+        model = Transaction
+        fields = (
+            "tx_ref",
+            "amount",
+            "currency",
+            "redirect_url",
+            "customer",
+
         )
 
         
