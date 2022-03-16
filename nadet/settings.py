@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "corsheaders",
-    'users',
+    'users',    
+    'products',
     'subscriptions',
     # third party apps
     'django.contrib.sites',
