@@ -9,8 +9,6 @@ from subscriptions.models import Membership
 from .serializers import MembershipSerializer
 from django.shortcuts import get_object_or_404
 from users.models import User
-  
-
 @require_POST
 @csrf_exempt
 def init_membership(request):

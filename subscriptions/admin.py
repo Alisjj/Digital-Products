@@ -3,3 +3,4 @@ from .models import Membership
 
 # Register your models here.
 admin.site.register(Membership)
+
