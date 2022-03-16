@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from users.api.views import PasswordResetConfirmView
-from products.api.views import ProductListView, UserProductListView, ProductCreateView
+from products.api.views import ProductListView, UserProductListView, ProductCreateView, flw_webhook
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -17,6 +17,8 @@ urlpatterns = [
 
     path('discover/', ProductListView.as_view(), name="discover"),
     path('products/', UserProductListView.as_view(), name="user-products"),
-    path('products/create/', ProductCreateView.as_view(), name="product-create")
+    path('products/create/', ProductCreateView.as_view(), name="product-create"),
+
+    path('webhooks/flutterwave/', flw_webhook),
 
 ]

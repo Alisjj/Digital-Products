@@ -1,12 +1,19 @@
 from products.models import Category, Course, Lesson, LessonDetail, Product, UploadFile
+from django.contrib.auth import get_user_model
+
+from django.http import HttpResponse
 import requests
 import json
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import permissions
+from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
 from .serializers import CategorySerializer, CourseSerializer, ProductSerializer, TransactionSerializer
 from django.conf import settings
 from rave_python import Rave
 
+User = get_user_model()
 rave = Rave(settings.FLW_PUBLIC_KEY, settings.FLW_SECRET_KEY, usingEnv=False )
 
 class CategoryView(generics.ListCreateAPIView):
@@ -28,6 +35,7 @@ class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ProductListView(generics.ListAPIView):
+    permission_classes = (permissions.AllowAny,)
     serializer_class = ProductSerializer
     queryset = Product.objects.filter(active=True)
 
@@ -64,12 +72,11 @@ class ProductCreateView(generics.CreateAPIView):
 
 
 class PaymentView(generics.GenericAPIView):
-
+    permission_classes = (permissions.AllowAny, )
     serializer_class = TransactionSerializer
 
     def post(self, request):
         payload = request.data
-        print()
         data = {
             "tx_ref": payload['tx_ref'],
             "amount": payload['amount'],
@@ -90,3 +97,39 @@ class PaymentView(generics.GenericAPIView):
 
 
 # class TransactionView(generics.GenericAPIView)
+
+
+# class FlwWebhookView(View):
+#     permission_classes = (permissions.AllowAny,)
+
+    
+@csrf_exempt
+def flw_webhook(request, *args, **kwargs):
+    secret_hash = settings.FLW_SECRET_HASH
+    signature = request.headers.get("VERIF-HASH")
+    event = json.loads(request.body)
+    if signature == None or signature != secret_hash:
+        return HttpResponse(status=401)
+
+
+    if event['event'] == "charge.completed" and event['data']['status'] == "successful":
+
+        tr_id = int(event['data']['id'])
+        url = "https://api.flutterwave.com/v3/transactions/{}/verify".format(tr_id)
+        res = requests.get(url=url, headers={
+            "Authorization": settings.FLW_SECRET_KEY
+            })
+
+        resp = res.json()
+
+        product_id = resp['data']['meta']['product_id']
+        flw_customer_email = resp['data']['customer']['email']
+        try:
+            user = User.objects.get(email=flw_customer_email)
+            user.userlibrary.products.add(product_id)
+        except User.DoesNotExist:
+            #TODO: Anonymous
+            print("User does not exist")
+            pass
+
+    return HttpResponse(status=status.HTTP_200_OK)

@@ -34,15 +34,16 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = (
-                'name',
-                'description',
-                'cover',
-                'category',
-                'content',
-                'content_url',
-                'price',
-                'original_price',
-                'preoder_date',
+            'id',
+            'name',
+            'description',
+            'cover',
+            'category',
+            'content',
+            'content_url',
+            'price',
+            'original_price',
+            'preoder_date',
         )
 
 
