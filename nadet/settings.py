@@ -3,6 +3,7 @@ import environ
 import django_heroku
 from pathlib import Path
 from datetime import timedelta
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 env = environ.Env(
     # set casting, default value
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'products',
     'users',
+    'subscriptions',
     # third party apps
     'django.contrib.sites',
     'allauth',

@@ -10,4 +10,5 @@ urlpatterns = [
     ),
     path('auth/', include('users.api.urls')),
     path('products/', include('products.api.urls')),
+    path('subscriptions/', include('subscriptions.api.urls')),
 ]
