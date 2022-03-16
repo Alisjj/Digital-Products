@@ -9,7 +9,7 @@ from rest_framework import permissions
 from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
-from .serializers import CategorySerializer, CourseSerializer, ProductSerializer, TransactionSerializer
+from .serializers import CategorySerializer, CourseSerializer, ProductSerializer, TransactionSerializer, PurchasedProductSerializer
 from django.conf import settings
 from rave_python import Rave
 
@@ -63,6 +63,12 @@ class ProductDestroy(generics.DestroyAPIView):
     def get_queryset(self):
         return Product.objects.filter(user=self.request.user)
 
+class PurchasedProductsView(generics.ListAPIView):
+    serializer_class = PurchasedProductSerializer
+
+    def get_queryset(self):
+        return self.request.user.userlibrary.products.all()
+
 class ProductCreateView(generics.CreateAPIView):
     serializer_class = ProductSerializer
 
@@ -71,29 +77,29 @@ class ProductCreateView(generics.CreateAPIView):
         return super().perform_create(serializer)
 
 
-class PaymentView(generics.GenericAPIView):
-    permission_classes = (permissions.AllowAny, )
-    serializer_class = TransactionSerializer
+# class PaymentView(generics.GenericAPIView):
+#     permission_classes = (permissions.AllowAny, )
+#     serializer_class = TransactionSerializer
 
-    def post(self, request):
-        payload = request.data
-        data = {
-            "tx_ref": payload['tx_ref'],
-            "amount": payload['amount'],
-            "currency": payload['currency'],
-            "redirect_url": payload['redirect_url'],
-            "customer": {
-                "email": payload['customer.email'],
-                "phonenumber": payload['customer.phonenumber'],
-                "name": payload['customer.name'],
-            }
-        }
+#     def post(self, request):
+#         payload = request.data
+#         data = {
+#             "tx_ref": payload['tx_ref'],
+#             "amount": payload['amount'],
+#             "currency": payload['currency'],
+#             "redirect_url": payload['redirect_url'],
+#             "customer": {
+#                 "email": payload['customer.email'],
+#                 "phonenumber": payload['customer.phonenumber'],
+#                 "name": payload['customer.name'],
+#             }
+#         }
         
-        res = requests.post("https://api.flutterwave.com/v3/payments", json=data, headers={
-            "Authorization": settings.FLW_SECRET_KEY
-            })
+#         res = requests.post("https://api.flutterwave.com/v3/payments", json=data, headers={
+#             "Authorization": settings.FLW_SECRET_KEY
+#             })
 
-        return Response(res.json())
+#         return Response(res.json())
 
 
 # class TransactionView(generics.GenericAPIView)
@@ -127,6 +133,7 @@ def flw_webhook(request, *args, **kwargs):
         try:
             user = User.objects.get(email=flw_customer_email)
             user.userlibrary.products.add(product_id)
+            print("product added")
         except User.DoesNotExist:
             #TODO: Anonymous
             print("User does not exist")

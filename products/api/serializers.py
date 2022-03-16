@@ -46,6 +46,22 @@ class ProductSerializer(serializers.ModelSerializer):
             'preoder_date',
         )
 
+class PurchasedProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = (
+            'id',
+            'name',
+            'description',
+            'cover',
+            'category',
+            'content',
+            'content_url',
+            'price',
+            'original_price',
+            'preoder_date',
+        )
+
 
 class CustomerSerializer(serializers.Serializer):
     email = serializers.EmailField()
