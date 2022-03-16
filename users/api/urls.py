@@ -2,7 +2,7 @@ from django.urls import path, include
 from dj_rest_auth.registration.views import VerifyEmailView, ConfirmEmailView
 # from dj_rest_auth.views import PasswordResetConfirmView
 from .views import CustomPasswordResetView, PasswordResetChangeView
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from users.api.views import FacebookLogin, GoogleLogin, LinkedInLogin
 

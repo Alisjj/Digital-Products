@@ -1,6 +1,7 @@
 from django.db import models
+from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractUser
-
+from products.models import Product
 
 class User(AbstractUser):
     profile_pic = models.ImageField()
@@ -11,3 +12,19 @@ class User(AbstractUser):
     profile_link = models.URLField(max_length=150)
     referral_url = models.URLField(max_length=150)
 
+
+class UserLibrary(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    products = models.ManyToManyField(Product, blank=True)
+
+    class Meta:
+        verbose_name_plural = "UserLibraries"
+
+    def __str__(self):
+        return self.user.email
+
+def post_save_user_library(sender, instance, created, **kwargs):
+    if created:
+        UserLibrary.objects.create(user=instance)
+
+post_save.connect(post_save_user_library, sender=User)

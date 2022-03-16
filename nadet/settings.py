@@ -36,8 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "corsheaders",
-    'users',    
+    'users',
     'products',
+
     'subscriptions',
     # third party apps
     'django.contrib.sites',
@@ -252,6 +253,12 @@ AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of allauth
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+
+FLW_PUBLIC_KEY = env("FLW_PUBLIC_KEY")
+FLW_SECRET_KEY = env("FLW_SECRET_KEY")
+FLW_SECRET_HASH = env("FLW_SECRET_HASH")
+
 
 
 if not DEBUG:

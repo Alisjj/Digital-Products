@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import User
+from .models import UserLibrary
 
 # class AccountAdmin(UserAdmin):
 #     list_display = ('email', 'username','pk', 'date_joined', 'last_login', 'is_admin', 'is_staff')
@@ -11,3 +12,4 @@ from .models import User
 #     fieldsets = ()
 
 admin.site.register(User)
+admin.site.register(UserLibrary)

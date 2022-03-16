@@ -9,54 +9,6 @@ from subscriptions.models import Membership
 from .serializers import MembershipSerializer
 from django.shortcuts import get_object_or_404
 from users.models import User
-
-rave = Rave(os.getenv("FLW_PUBLIC_KEY"), os.getenv("FLW_SECRET_KEY"), os.getenv("FLW_ENCRYPTION_KEY"))
-
-
-Basic_Plan_Monthly = rave.Subscription.create({
-    "name": "Basic Plan Monthly",
-    "amount": 29,
-    "interval": "Monthly",
-    "currency": "USD",
-})
-
-Basic_Plan_Yearly = rave.Subscription.create({
-    "name": "Basic Plan Yearly",
-    "amount": 313,
-    "interval": "Yearly",
-    "currency": "USD",
-})
-
-Pro_Plan_Monthly = rave.Subscription.create({
-    "name": "Pro Plan Monthly",
-    "amount": 49,
-    "interval": "Monthly",
-    "currency": "USD",
-})
-
-Pro_Plan_Yearly = rave.Subscription.create({
-    "name": "Pro Plan Yearly",
-    "amount": 529,
-    "interval": "Yearly",
-    "currency": "USD",
-})
-
-Premium_Plan_Monthly = rave.Subscription.create({
-    "name": "Premium Plan Monthly",
-    "amount": 99,
-    "interval": "Monthly",
-    "currency": "USD",
-})
-
-Premium_Plan_Yearly = rave.Subscription.create({
-    "name": "Premium Plan Yearly",
-    "amount": 1069,
-    "interval": "Yearly",
-    "currency": "USD",
-})
-
-  
-
 @require_POST
 @csrf_exempt
 def init_membership(request):
