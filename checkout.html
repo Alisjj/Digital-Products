@@ -1,18 +1,18 @@
 
 
 <form method="POST" action="https://checkout.flutterwave.com/v3/hosted/pay">
-    <div>
-      Your order is ₦3,400
-    </div>
-    <input type="hidden" name="public_key" value="FLWPUBK_TEST-SANDBOXDEMOKEY-X" />
-    <input type="hidden" name="customer[email]" value="jessepinkman@walterwhite.org" />
-    <input type="hidden" name="customer[name]" value="Jesse Pinkman" />
-    <input type="hidden" name="tx_ref" value="bitethtx-019203" />
-    <input type="hidden" name="amount" value="3400" />
-    <input type="hidden" name="currency" value="GHS" />
-    <input type="hidden" name="meta[token]" value="54" />
-    <input type="hidden" name="redirect_url" value="https://demoredirect.localhost.me/" />
-    <button type="submit" id="start-payment-button">Pay Now</button>
-  </form>
-  
-  
+  <div>
+    Your order is ₦3,000
+  </div>
+  <input type="hidden" name="public_key" value="FLWPUBK_TEST-b2edad0d13cf4e999e8791271df0168c-X" />
+  <input type="hidden" name="customer[email]" value="abdulojigo@gmail.com" />
+  <input type="hidden" name="payment_plan" value="19097" />
+  <input type="hidden" name="customer[name]" value="Abdullahi Abdulhamid" />
+  <input type="hidden" name="tx_ref" value="subs007" />
+  <input type="hidden" name="amount" value="29" />
+  <input type="hidden" name="currency" value="USD" />
+  <input type="hidden" name="meta[event_type]" value="subscription.checkout" />
+  <!-- <input type="hidden" name="meta[product_id]" value="4" /> -->
+  <input type="hidden" name="redirect_url" value="http://localhost:8000/discover" />
+  <button type="submit" id="start-payment-button">Pay Now</button>
+</form>

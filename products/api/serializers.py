@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from products.models import Category, Course, Lesson, LessonDetail, Product, Section, Transaction, UploadFile
+from products.models import Category, Lesson, LessonDetail, Product, Section, Transaction, UploadFile
+from products.models import Course
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -17,17 +18,6 @@ class CategorySerializer(serializers.ModelSerializer):
             'digital_products',
             'services',
         )
-
-
-class CourseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Course
-        fields = '__all__'
-
-class Course(serializers.ModelSerializer):
-    class Meta:
-        model = Course
-        fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
 
@@ -67,6 +57,22 @@ class CustomerSerializer(serializers.Serializer):
     email = serializers.EmailField()
     phonenumber = serializers.CharField()
     name = serializers.CharField(max_length=100)
+
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = (
+            'id',
+            'name',
+            'description',
+            'cover',
+            'category',
+            'price',
+            'original_price',
+            'preoder_date',
+            'preview_video',
+        )
+        
 
 
 # class MetaSerializer(serializers.Serializer):

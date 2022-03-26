@@ -1,20 +1,25 @@
+# from lib2to3.pgen2.tokenize import TokenError
+import os
+from subprocess import check_output
 from products.models import Category, Course, Lesson, LessonDetail, Product, UploadFile
 from django.contrib.auth import get_user_model
-
-from django.http import HttpResponse
+from rest_framework import mixins
 import requests
+from django.http import HttpResponse
+from products.mixins import CourseAccesMixin
 import json
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework import generics
-from rest_framework.response import Response
+
+from subscription.models import Pricing
 from .serializers import CategorySerializer, CourseSerializer, ProductSerializer, TransactionSerializer, PurchasedProductSerializer
 from django.conf import settings
 from rave_python import Rave
 
 User = get_user_model()
-rave = Rave(settings.FLW_PUBLIC_KEY, settings.FLW_SECRET_KEY, usingEnv=False )
+rave = Rave(os.getenv('FLW_PUBLIC_KEY'), os.getenv('FLW_SECRET_KEY'))
 
 class CategoryView(generics.ListCreateAPIView):
     serializer_class = CategorySerializer
@@ -78,37 +83,12 @@ class ProductCreateView(generics.CreateAPIView):
         return super().perform_create(serializer)
 
 
-# class PaymentView(generics.GenericAPIView):
-#     permission_classes = (permissions.AllowAny, )
-#     serializer_class = TransactionSerializer
+class CourseView(CourseAccesMixin, generics.ListCreateAPIView  ):
+    serializer_class = CourseSerializer
+    queryset = Course.objects.all()
 
-#     def post(self, request):
-#         payload = request.data
-#         data = {
-#             "tx_ref": payload['tx_ref'],
-#             "amount": payload['amount'],
-#             "currency": payload['currency'],
-#             "redirect_url": payload['redirect_url'],
-#             "customer": {
-#                 "email": payload['customer.email'],
-#                 "phonenumber": payload['customer.phonenumber'],
-#                 "name": payload['customer.name'],
-#             }
-#         }
         
-#         res = requests.post("https://api.flutterwave.com/v3/payments", json=data, headers={
-#             "Authorization": settings.FLW_SECRET_KEY
-#             })
-
-#         return Response(res.json())
-
-
-# class TransactionView(generics.GenericAPIView)
-
-
-# class FlwWebhookView(View):
-#     permission_classes = (permissions.AllowAny,)
-
+        
     
 @csrf_exempt
 def flw_webhook(request, *args, **kwargs):
@@ -124,20 +104,45 @@ def flw_webhook(request, *args, **kwargs):
         tr_id = int(event['data']['id'])
         url = "https://api.flutterwave.com/v3/transactions/{}/verify".format(tr_id)
         res = requests.get(url=url, headers={
-            "Authorization": settings.FLW_SECRET_KEY
+            "Authorization": settings.RAVE_SECRET_KEY
             })
-
         resp = res.json()
+        event_type = resp['data']['meta']['event_type']
 
-        product_id = resp['data']['meta']['product_id']
-        flw_customer_email = resp['data']['customer']['email']
-        try:
-            user = User.objects.get(email=flw_customer_email)
-            user.userlibrary.products.add(product_id)
-            print("product added")
-        except User.DoesNotExist:
-            #TODO: Anonymous
-            print("User does not exist")
-            pass
+        if event_type == "subscription.checkout":
+            flw_customer_email = resp['data']['customer']['email']
+            params = {
+                "email": flw_customer_email,
+            }
+
+            sub_url = "https://api.flutterwave.com/v3/subscriptions"
+
+            sub = requests.get(url=sub_url, headers={
+            "Authorization": settings.RAVE_SECRET_KEY
+            }, params=params)
+
+            subs = sub.json()
+            plan_id = subs["data"][0]["plan"]
+
+            try:
+                user = User.objects.get(email=flw_customer_email)
+                user.subscription.status = subs['data'][0]['status']
+                user.subscription.flw_subscription_id = subs['data'][0]['id']
+                pricing = Pricing.objects.get(plan_id=plan_id)
+                user.subscription.pricing = pricing
+                user.subscription.save()
+            except User.DoesNotExist:
+                return HttpResponse("User Does not exist", status=status.HTTP_400_BAD_REQUEST)
+
+
+        elif event_type == "product.checkout":
+            product_id = resp['data']['meta']['product_id']
+            flw_customer_email = resp['data']['customer']['email']
+            try:
+                user = User.objects.get(email=flw_customer_email)
+                user.userlibrary.products.add(product_id)
+                print("product added")
+            except User.DoesNotExist:
+                return HttpResponse("User Does not exist", status=status.HTTP_400_BAD_REQUEST)
 
     return HttpResponse(status=status.HTTP_200_OK)

@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     "corsheaders",
     'users',
     'products',
-
-    'subscriptions',
+    'subscription',
+    
     # third party apps
     'django.contrib.sites',
     'allauth',
@@ -109,8 +109,8 @@ DATABASES = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),    
     'ROTATE_REFRESH_TOKENS': False, # IMPORTANT
     'BLACKLIST_AFTER_ROTATION': False, # IMPORTANT
     'UPDATE_LAST_LOGIN': True,
@@ -256,7 +256,7 @@ AUTHENTICATION_BACKENDS = [
 
 
 FLW_PUBLIC_KEY = env("FLW_PUBLIC_KEY")
-FLW_SECRET_KEY = env("FLW_SECRET_KEY")
+RAVE_SECRET_KEY = env("RAVE_SECRET_KEY")
 FLW_SECRET_HASH = env("FLW_SECRET_HASH")
 
 

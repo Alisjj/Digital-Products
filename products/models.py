@@ -4,6 +4,16 @@ import os
 # User = get_user_model()
 # User = 'alsajjad'
 
+PRODUCT_TYPE = [
+        
+    ]
+PRODUCT_TYPE = [
+    ('digital', 'Digital Product'),
+    ('ticket', 'Ticket'),
+    ('service', 'Service'),
+    ('subscription', 'Subscription')
+]
+
 
 class Category(models.Model):
     user = models.ForeignKey('users.User', on_delete=models.CASCADE)
@@ -28,6 +38,7 @@ class Product(models.Model):
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name="products")
     cover = models.ForeignKey(UploadFile, related_name="product_image",on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=230)
+    product_type = models.CharField(choices=PRODUCT_TYPE, max_length=15)
     description = models.TextField()
 
     content = models.ForeignKey(UploadFile, related_name="product_file", on_delete=models.SET_NULL, null=True, blank=True)
@@ -44,9 +55,8 @@ class Product(models.Model):
         return self.name
 
 
-
 class Course(Product):
-        preview_video = models.ForeignKey(UploadFile, on_delete=models.SET_NULL, null=True, blank=True)
+    preview_video = models.ForeignKey(UploadFile, on_delete=models.SET_NULL, null=True, blank=True)
 
 class Section(models.Model):
     name =  models.CharField(max_length=120)
@@ -82,15 +92,11 @@ class Transaction(models.Model):
     created_datetime = models.DateTimeField(auto_now_add=True)
     tx_ref = models.CharField(max_length=100)
     flw_ref = models.CharField(max_length=100)
-    device_fingerprint = models.CharField(max_length=100)
     amount = models.DecimalField(decimal_places=2, max_digits=9)
     currency = models.CharField(max_length=3)
     charged_amount = models.DecimalField(decimal_places=2, max_digits=9)
     app_fee = models.DecimalField(decimal_places=2, max_digits=9)
     merchant_fee = models.DecimalField(decimal_places=2, max_digits=9)
-    processor_response = models.CharField(max_length=100)
-    auth_model = models.CharField(max_length=100)
-    ip = models.CharField(max_length=100)
     narration = models.CharField(max_length=100)
     status = models.CharField(max_length=50)
     payment_type = models.CharField(max_length=50)
