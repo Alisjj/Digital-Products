@@ -19,7 +19,7 @@ from django.conf import settings
 from rave_python import Rave
 
 User = get_user_model()
-rave = Rave(os.getenv('FLW_PUBLIC_KEY'), os.getenv('FLW_SECRET_KEY'))
+rave = Rave(os.getenv('FLW_PUBLIC_KEY'), os.getenv('RAVE_SECRET_KEY'))
 
 class CategoryView(generics.ListCreateAPIView):
     serializer_class = CategorySerializer

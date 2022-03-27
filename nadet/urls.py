@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from users.api.views import PasswordResetConfirmView
 from products.api.views import ProductListView, UserProductListView, ProductCreateView, flw_webhook
-from subscription.api.views import PricingView
+from subscription.api.views import PricingView, login_receiver
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -21,6 +21,7 @@ urlpatterns = [
     path('pricing/', PricingView.as_view(), name="pricing"),
 
     path('webhooks/flutterwave/', flw_webhook),
+    path('subscription/status/', login_receiver),
 
 
 ]
