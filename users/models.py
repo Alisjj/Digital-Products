@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractUser
-from products.models import Product
+from products.models import Product, Course
 
 class User(AbstractUser):
     profile_pic = models.ImageField()
@@ -16,6 +16,7 @@ class User(AbstractUser):
 class UserLibrary(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, blank=True)
+    courses = models.ManyToManyField(Course, blank=True, related_name="courses")
 
     class Meta:
         verbose_name_plural = "UserLibraries"

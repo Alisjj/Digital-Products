@@ -68,21 +68,12 @@ class Section(models.Model):
 class Lesson(models.Model):
     name = models.CharField(max_length=120)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name="lessons")
-
-    def __str__(self):
-        return self.name
-
-class LessonDetail(models.Model):
-    lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE, related_name="lesson_detail")
     file = models.ForeignKey(UploadFile, on_delete=models.SET_NULL, null=True, blank=True)
     file_url = models.URLField(blank=True)
     description = models.TextField(blank=True, null=True)
 
-
     def __str__(self):
-        return self.lesson.name
-
-
+        return self.name
 
 class Transaction(models.Model):
     """Represents a transaction for a specific payment type and user"""

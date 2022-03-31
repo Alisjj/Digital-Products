@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from products.models import Category, Lesson, LessonDetail, Product, Section, Transaction, UploadFile
+from products.models import Category, Lesson, Product, Section, Transaction, UploadFile
 from products.models import Course
 
 
@@ -96,5 +96,14 @@ class TransactionSerializer(serializers.ModelSerializer):
 
         )
 
-        
+class LessonDetailSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = Lesson
+        fields = ("__all__")
+
+class SectionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Section
+        fields = ("__all__")

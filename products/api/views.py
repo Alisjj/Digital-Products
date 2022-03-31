@@ -1,42 +1,28 @@
 # from lib2to3.pgen2.tokenize import TokenError
 import os
+from re import template
 from subprocess import check_output
-from products.models import Category, Course, Lesson, LessonDetail, Product, UploadFile
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
+from products.models import Category, Course, Lesson, Product, Section, UploadFile
 from django.contrib.auth import get_user_model
 from rest_framework import mixins
 import requests
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from products.mixins import CourseAccesMixin
 import json
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework import generics
-
+from rest_framework.response import Response
 from subscription.models import Pricing
-from .serializers import CategorySerializer, CourseSerializer, ProductSerializer, TransactionSerializer, PurchasedProductSerializer
+from .serializers import LessonDetailSerializer, CourseSerializer, ProductSerializer, PurchasedProductSerializer, SectionSerializer
 from django.conf import settings
 from rave_python import Rave
 
 User = get_user_model()
 rave = Rave(os.getenv('FLW_PUBLIC_KEY'), os.getenv('RAVE_SECRET_KEY'))
-
-class CategoryView(generics.ListCreateAPIView):
-    serializer_class = CategorySerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Category.objects.filter(user=user)
-        return queryset
-
-
-class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = CategorySerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Category.objects.filter(user=user)
-        return queryset
 
 
 class ProductListView(generics.ListAPIView):
@@ -83,9 +69,36 @@ class ProductCreateView(generics.CreateAPIView):
         return super().perform_create(serializer)
 
 
-class CourseView(CourseAccesMixin, generics.ListCreateAPIView  ):
+class CourseView(CourseAccesMixin, generics.CreateAPIView):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+        return super().perform_create(serializer)
+
+class CourseList(generics.ListAPIView):
+    serializer_class = CourseSerializer
+    queryset = Course.objects.all()
+
+class CourseRetrieve(generics.RetrieveAPIView):
+    serializer_class = CourseSerializer
+    queryset = Course.objects.all()
+
+class CourseDetail(generics.ListAPIView):
+    serializer_class = SectionSerializer
+
+    def get_queryset(self):
+        course = get_object_or_404(Course, id=self.kwargs["course_id"])
+        return course.sections.all()
+
+class SectionDetailView(generics.ListAPIView):
+    serializer_class = LessonDetailSerializer
+
+    def get_queryset(self):
+        course = get_object_or_404(Course, id=self.kwargs["course_id"])
+        section = get_object_or_404(Section, id=self.kwargs["section_id"], course=course)
+        return section.lessons.all()
 
         
         
@@ -111,8 +124,10 @@ def flw_webhook(request, *args, **kwargs):
 
         if event_type == "subscription.checkout":
             flw_customer_email = resp['data']['customer']['email']
+            plan_id = resp['data']['plan']
             params = {
                 "email": flw_customer_email,
+                "plan": plan_id,
             }
 
             sub_url = "https://api.flutterwave.com/v3/subscriptions"
@@ -144,5 +159,29 @@ def flw_webhook(request, *args, **kwargs):
                 print("product added")
             except User.DoesNotExist:
                 return HttpResponse("User Does not exist", status=status.HTTP_400_BAD_REQUEST)
+
+        if event['event'] == "subscription.cancelled":
+            flw_customer_email = event['data']['customer']['email']
+            plan_id = event['plan']['id']
+            params = {
+                "email": flw_customer_email,
+                "plan": plan_id,
+            }
+
+            sub_url = "https://api.flutterwave.com/v3/subscriptions"
+            sub = requests.get(url=sub_url, headers={
+            "Authorization": settings.RAVE_SECRET_KEY
+            }, params=params)
+
+            subs = sub.json()
+
+            try:
+                user = User.objects.get(email=flw_customer_email)
+                user.subscription.status = subs['data'][0]['status']
+                user.subscription.save()
+            except User.DoesNotExist:
+                return HttpResponse("User Does not exist", status=status.HTTP_400_BAD_REQUEST)
+
+
 
     return HttpResponse(status=status.HTTP_200_OK)
