@@ -5,9 +5,10 @@ from django.urls import path
 
 
 urlpatterns = [
+    path('product-create/', views.ProductCreateView.as_view(), name = 'product-create'),
     path('<int:pk>/', views.ProductDetailView.as_view(), name = 'product-detail'),
-    path('<int:pk>/update/', views.ProductUpdateView.as_view(), name = 'product-detail'),
-    path('<int:pk>/delete/', views.ProductDestroy.as_view(), name = 'product-detail'),
+    path('<int:pk>/update/', views.ProductUpdateView.as_view(), name = 'product-update'),
+    path('<int:pk>/delete/', views.ProductDestroy.as_view(), name = 'product-delete'),
     path('purchased-products/', views.PurchasedProductsView.as_view(), name='purchased-product'),
     path('course-list/', views.CourseList.as_view(), name="course-list"),
     path('course-create/', views.CourseView.as_view(), name="course-create"),

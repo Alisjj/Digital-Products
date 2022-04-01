@@ -33,6 +33,9 @@ class ProductListView(generics.ListAPIView):
 class ProductDetailView(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
+
+    def get_queryset(self):
+        return self.request.user.userlibrary.products.all()
     
 
 
@@ -64,9 +67,16 @@ class PurchasedProductsView(generics.ListAPIView):
 class ProductCreateView(generics.CreateAPIView):
     serializer_class = ProductSerializer
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-        return super().perform_create(serializer)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if request.data['product_type'] == "subscription":
+            if request.user.subscription.pricing.name == "Free":
+                return Response("Upgrade your pricing plan", status=status.HTTP_401_UNAUTHORIZED)
+        self.perform_create(serializer.save(user=request.user))
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 
 class CourseView(CourseAccesMixin, generics.CreateAPIView):
