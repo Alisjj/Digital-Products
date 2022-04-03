@@ -1,10 +1,15 @@
 import os
+import requests
 import json
+from django.conf import settings
+from rest_framework.response import Response
 from django.http import JsonResponse
 from rave_python import Rave
 from rest_framework import generics
+from rest_framework import status
+from rest_framework import permissions
 from rest_framework.permissions import AllowAny
-from .serializers import PricingSerializer, LoginReceiverSerializer
+from .serializers import CancelSubscriptionSerializer, PaymentVerificationSerializer, PricingSerializer
 from subscription.models import Pricing
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
@@ -28,8 +33,103 @@ def login_receiver(request, *args, **kwargs):
         if subscription.pricing.name != "Free":
             sub = rave.Subscriptions.fetch(subscription.flw_subscription_id)
             subscription.status = sub['returnedData']['data']['plansubscriptions'][0]['status']
+            subscription.save()
+        print(subscription.status)
 
     except User.DoesNotExist:
         return JsonResponse({"details": "User does not exist"}, status=401)
 
     return JsonResponse({"details": "Successful"}, status=200)
+
+class PaymentVerification(generics.GenericAPIView):
+    serializer_class =  PaymentVerificationSerializer
+    permission_classes = (permissions.AllowAny,)
+    
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+
+        tr_id = request.data['transaction_id']
+        url = "https://api.flutterwave.com/v3/transactions/{}/verify".format(tr_id)
+        res = requests.get(url=url, headers={
+            "Authorization": settings.RAVE_SECRET_KEY
+            })
+        resp = res.json()
+        event_type = resp['data']['meta']['event_type']
+
+        if event_type == "subscription.checkout":
+            flw_customer_email = resp['data']['customer']['email']
+            plan_id = resp['data']['plan']
+            params = {
+                "email": flw_customer_email,
+                "plan": plan_id,
+            }
+
+            sub_url = "https://api.flutterwave.com/v3/subscriptions"
+
+            sub = requests.get(url=sub_url, headers={
+            "Authorization": settings.RAVE_SECRET_KEY
+            }, params=params)
+
+            subs = sub.json()
+            plan_id = subs["data"][0]["plan"]
+
+            try:
+                user = User.objects.get(email=flw_customer_email)
+                user.subscription.status = subs['data'][0]['status']
+                user.subscription.flw_subscription_id = subs['data'][0]['id']
+                pricing = Pricing.objects.get(plan_id=plan_id)
+                user.subscription.pricing = pricing
+                user.subscription.save()
+                print("Upgrade Successfull")
+            except User.DoesNotExist:
+                return Response("User Does not exist", status=status.HTTP_400_BAD_REQUEST)
+
+
+        if event_type == "product.checkout":
+            product_id = resp['data']['meta']['product_id']
+            flw_customer_email = resp['data']['customer']['email']
+            try:
+                user = User.objects.get(email=flw_customer_email)
+                user.userlibrary.products.add(product_id)
+                print("product added")
+            except User.DoesNotExist:
+                return Response("User Does not exist", status=status.HTTP_400_BAD_REQUEST)
+
+        if event_type == "course.checkout":
+            course_id = resp['data']['meta']['course_id']
+            flw_customer_email = resp['data']['customer']['email']
+            try:
+                user = User.objects.get(email=flw_customer_email)
+                user.userlibrary.courses.add(course_id)
+                print("Course Added")
+            except User.DoesNotExist:
+                return Response("User Does not exist", status=status.HTTP_400_BAD_REQUEST)
+        return Response({"details": "Successfull"}, status=200)
+
+class CancelSubscription(generics.GenericAPIView):
+    serializer_class = CancelSubscriptionSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        flw_customer_email = request.data["email"]
+        plan_id = request.data["plan_id"]
+        params = {
+            "email": flw_customer_email,
+            "plan": plan_id,
+        }
+
+        sub_url = "https://api.flutterwave.com/v3/subscriptions"
+        sub = requests.get(url=sub_url, headers={
+        "Authorization": settings.RAVE_SECRET_KEY
+        }, params=params)
+
+        subs = sub.json()
+
+        try:
+            user = User.objects.get(email=flw_customer_email)
+            user.subscription.status = subs['data'][0]['status']
+            user.subscription.save()
+        except User.DoesNotExist:
+            return Response({"details":"User Does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"details": "Subscription Cancel Successfull"}, status=status.HTTP_200_OK)

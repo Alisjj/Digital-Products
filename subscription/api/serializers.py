@@ -7,10 +7,20 @@ class PricingSerializer(serializers.ModelSerializer):
         model = Pricing
         fields = '__all__'
 
-class LoginReceiverSerializer(serializers.Serializer):
+class CancelSubscriptionSerializer(serializers.Serializer):
     username = serializers.CharField()
+    plan_id = serializers.CharField()
 
     class Meta:
         fields = (
-            'username'
+            'username',
+            'plan_id'
+        )
+
+class PaymentVerificationSerializer(serializers.Serializer):
+    transaction_id = serializers.CharField()
+
+    class Meta:
+        fields = (
+            'transaction_id'
         )

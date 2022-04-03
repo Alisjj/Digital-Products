@@ -31,11 +31,9 @@ class ProductListView(generics.ListAPIView):
     queryset = Product.objects.filter(active=True)
 
 class ProductDetailView(generics.RetrieveAPIView):
+    permission_classes = (permissions.AllowAny,)
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-
-    def get_queryset(self):
-        return self.request.user.userlibrary.products.all()
     
 
 
@@ -78,7 +76,6 @@ class ProductCreateView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-
 class CourseView(CourseAccesMixin, generics.CreateAPIView):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
@@ -90,6 +87,13 @@ class CourseView(CourseAccesMixin, generics.CreateAPIView):
 class CourseList(generics.ListAPIView):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+
+class PurchasedCourseList(generics.ListAPIView):
+    serializer_class = CourseSerializer
+    queryset = Course.objects.all()
+
+    def get_queryset(self):
+        return self.request.user.userlibrary.courses.all()
 
 class CourseRetrieve(generics.RetrieveAPIView):
     serializer_class = CourseSerializer
