@@ -15,7 +15,7 @@ class Product(models.Model):
     description = models.TextField()
 
     content = models.FileField(null=True, blank=True)
-    pricing_tier = models.ManyToManyField('subscription.CustomPricing', blank=True)
+    # pricing_tier = models.ManyToManyField('subscription.CustomPricing', blank=True)
     content_url = models.URLField(null=True, blank=True)
     category = models.CharField(max_length=120)
     active = models.BooleanField(default=False)
