@@ -24,3 +24,19 @@ class PaymentVerificationSerializer(serializers.Serializer):
         fields = (
             'transaction_id'
         )
+
+class PricingTierSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    amount = serializers.IntegerField()
+    currency = serializers.CharField()
+
+    class Meta:
+        fields = (
+            'name',
+            'amount',
+            'currency',
+            'duration',
+            'interval',
+        )
+
+    

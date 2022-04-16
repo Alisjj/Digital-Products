@@ -11,6 +11,8 @@ rave = Rave(os.getenv('FLW_PUBLIC_KEY'), os.getenv('RAVE_SECRET_KEY'))
 class Pricing(models.Model):
     name = models.CharField(max_length=100)
     plan_id = models.CharField(max_length=100)
+    price = models.PositiveIntegerField(default=0)
+    currency = models.CharField(max_length=3)
 
     def __str__(self):
         return self.name
@@ -24,6 +26,43 @@ class Subscription(models.Model):
 
     def __str__(self):
         return self.user.email
+
+
+class CustomPricing(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    plan_id = models.CharField(max_length=100)
+    name = models.CharField(max_length=50)
+    price = models.PositiveIntegerField(default=0)
+    currency = models.CharField(max_length=3)
+
+
+class Transaction(models.Model):
+    """Represents a transaction for a specific payment type and user"""
+    user = models.ForeignKey(
+        "users.User", related_name="flw_transactions", on_delete=models.CASCADE
+    )
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    tx_ref = models.CharField(max_length=100)
+    flw_ref = models.CharField(max_length=100)
+    amount = models.DecimalField(decimal_places=2, max_digits=9)
+    currency = models.CharField(max_length=3)
+    charged_amount = models.DecimalField(decimal_places=2, max_digits=9)
+    app_fee = models.DecimalField(decimal_places=2, max_digits=9)
+    merchant_fee = models.DecimalField(decimal_places=2, max_digits=9)
+    narration = models.CharField(max_length=100)
+    status = models.CharField(max_length=50)
+    payment_type = models.CharField(max_length=50)
+    created_at = models.DateTimeField(
+        help_text="Created datetime received from Flutterwave"
+    )
+    account_id = models.PositiveIntegerField()
+
+    class Meta:
+        verbose_name = "Transaction"
+        verbose_name_plural = "Transactions"
+
+    def __str__(self):
+        return self.tx_ref
 
 def post_save_user(sender, instance, created, *args, **kwargs):
     if created:

@@ -1,15 +1,10 @@
 # from lib2to3.pgen2.tokenize import TokenError
 import os
-from re import template
-from subprocess import check_output
-from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
-from products.models import Category, Course, Lesson, Product, Section, UploadFile
+from products.models import Course, Product, Section
 from django.contrib.auth import get_user_model
-from rest_framework import mixins
 import requests
-from django.http import HttpResponse, JsonResponse
-from products.mixins import CourseAccesMixin
+from django.http import HttpResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions
@@ -70,19 +65,35 @@ class ProductCreateView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         if request.data['product_type'] == "subscription":
             if request.user.subscription.pricing.name == "Free":
-                return Response("Upgrade your pricing plan", status=status.HTTP_401_UNAUTHORIZED)
+                return Response("Upgrade your pricing plan to create a subscription service", status=status.HTTP_401_UNAUTHORIZED)
         self.perform_create(serializer.save(user=request.user))
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class CourseView(CourseAccesMixin, generics.CreateAPIView):
+class CourseView(generics.CreateAPIView):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-        return super().perform_create(serializer)
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
+    #     return super().perform_create(serializer)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = request.user
+        user_courses = Course.objects.filter(user=user)
+        user_subscription = user.subscription.pricing.name
+        if user_subscription == "Free" and user_courses.count() == 5:
+            return Response({"details": "Upgrade your Subscription Plan to add a course"}, status=status.HTTP_401_UNAUTHORIZED)
+        elif user_subscription == "Basic Plan" and user_courses.count() == 20:
+            return Response({"details": "Upgrade your Subscription Plan to add a course"}, status=status.HTTP_401_UNAUTHORIZED)
+        elif user_subscription == "Pro Plan" and user_courses.count() == 30:
+            return Response({"details": "Upgrade your Subscription Plan to add a course"}, status=status.HTTP_401_UNAUTHORIZED)
+        self.perform_create(serializer.save(user=user))
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class CourseList(generics.ListAPIView):
     serializer_class = CourseSerializer

@@ -13,6 +13,7 @@ from .serializers import CancelSubscriptionSerializer, PaymentVerificationSerial
 from subscription.models import Pricing
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
+from subscription.models import CustomPricing
 
 rave = Rave(os.getenv('FLW_PUBLIC_KEY'), os.getenv('RAVE_SECRET_KEY'))
 User = get_user_model()
@@ -133,3 +134,42 @@ class CancelSubscription(generics.GenericAPIView):
             return Response({"details":"User Does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"details": "Subscription Cancel Successfull"}, status=status.HTTP_200_OK)
+
+class CreatePricingPlan(generics.GenericAPIView):
+    serializer_class = PricingSerializer
+
+    def post(self, request):
+        name = request.data['name']
+        amount = request.data['amount']
+        currency = request.data['currency']
+        duration = request.data['duration']
+        interval = request.data['interval']
+
+        payload = {
+            "name": name,
+            "amount": amount,
+            "currency": currency,
+            "duration": duration,
+            "interval": interval
+        }
+
+        url = "https://api.flutterwave.com/v3/payment-plans"
+
+        try:
+            plan = requests.post(url=url, headers={
+            "Authorization": settings.RAVE_SECRET_KEY
+            }, json=payload)
+
+        except Exception as e:
+            return Response({"details": "Plan Creation Failed {}".format(e) }, status=status.HTTP_400_BAD_REQUEST)
+
+        name = plan['data']['name']
+        plan_id = plan['data']['id']
+        amount = plan['data']['amount']
+        currency = plan['data']['currency']
+    # currency
+
+        CustomPricing.objects.create(user=request.user, plan_id=plan_id, name=name, currency=currency)
+
+        return Response({"details": "Pricing Tier Created Successfully"}, status=status.HTTP_201_CREATED)
+

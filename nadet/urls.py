@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from users.api.views import PasswordResetConfirmView
 from products.api.views import ProductListView, UserProductListView, ProductCreateView, flw_webhook
-from subscription.api.views import CancelSubscription, PricingView, login_receiver, PaymentVerification
+from subscription.api.views import CancelSubscription, CreatePricingPlan, PricingView, login_receiver, PaymentVerification
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,6 +24,7 @@ urlpatterns = [
     path('subscription/receiver/', login_receiver),
     path('payment-verification/', PaymentVerification.as_view(), name="pricing-verification"),
     path('cancel-subscription/', CancelSubscription.as_view(), name="cancel-subscription"),
+    path('create-pricing/', CreatePricingPlan.as_view(), name="create-pricing")
 
 
 ]
