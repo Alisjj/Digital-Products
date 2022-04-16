@@ -15,8 +15,8 @@ class User(AbstractUser):
 
 class UserLibrary(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    products = models.ManyToManyField(Product, blank=True)
-    courses = models.ManyToManyField(Course, blank=True, related_name="courses")
+    # products = models.ManyToManyField(Product, blank=True)
+    # courses = models.ManyToManyField(Course, blank=True, related_name="courses")
 
     class Meta:
         verbose_name_plural = "UserLibraries"
