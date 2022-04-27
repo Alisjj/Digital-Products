@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from allauth.account.signals import email_confirmed
 
 User = get_user_model()
 rave = Rave(os.getenv('FLW_PUBLIC_KEY'), os.getenv('RAVE_SECRET_KEY'))
@@ -64,9 +65,9 @@ class Transaction(models.Model):
     def __str__(self):
         return self.tx_ref
 
-def post_save_user(sender, instance, created, *args, **kwargs):
-    if created:
-        free = Pricing.objects.get(name="Free")
-        Subscription.objects.create(user=instance, pricing=free)
+def post_email_confirmed(request, email_address, *args, **kwargs):
+    user = User.objects.get(email=email_address.email)
+    free = Pricing.objects.get(name="Free")
+    Subscription.objects.create(user=user, pricing=free)
 
-post_save.connect(post_save_user, sender=User)
+email_confirmed.connect(post_email_confirmed)
