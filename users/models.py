@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractUser
 from products.models import Product, Course
+from allauth.account.signals import email_confirmed
 
 class User(AbstractUser):
     profile_pic = models.ImageField()
@@ -28,4 +29,9 @@ def post_save_user_library(sender, instance, created, **kwargs):
     if created:
         UserLibrary.objects.create(user=instance)
 
-post_save.connect(post_save_user_library, sender=User)
+def post_email_confirmed(request, email_address, *args, **kwargs):
+    user = User.objects.get(email=email_address.email)
+    UserLibrary.objects.create(user=user)
+
+# post_save.connect(post_save_user_library, sender=User)
+email_confirmed.connect(post_email_confirmed)
