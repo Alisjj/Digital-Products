@@ -14,6 +14,7 @@ from subscription.models import Pricing
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 from subscription.models import CustomPricing
+from products.models import Product
 
 rave = Rave(os.getenv('FLW_PUBLIC_KEY'), os.getenv('RAVE_SECRET_KEY'))
 User = get_user_model()
@@ -55,57 +56,64 @@ class PaymentVerification(generics.GenericAPIView):
             "Authorization": settings.RAVE_SECRET_KEY
             })
         resp = res.json()
-        event_type = resp['data']['meta']['event_type']
+        try:
+            event_type = resp['data']['meta']['event_type']
 
-        if event_type == "subscription.checkout":
-            flw_customer_email = resp['data']['customer']['email']
-            plan_id = resp['data']['plan']
-            params = {
-                "email": flw_customer_email,
-                "plan": plan_id,
-            }
+            if event_type == "subscription.checkout":
+                flw_customer_email = resp['data']['customer']['email']
+                plan_id = resp['data']['plan']
+                params = {
+                    "email": flw_customer_email,
+                    "plan": plan_id,
+                }
 
-            sub_url = "https://api.flutterwave.com/v3/subscriptions"
+                sub_url = "https://api.flutterwave.com/v3/subscriptions"
 
-            sub = requests.get(url=sub_url, headers={
-            "Authorization": settings.RAVE_SECRET_KEY
-            }, params=params)
+                sub = requests.get(url=sub_url, headers={
+                "Authorization": settings.RAVE_SECRET_KEY
+                }, params=params)
 
-            subs = sub.json()
-            plan_id = subs["data"][0]["plan"]
+                subs = sub.json()
+                plan_id = subs["data"][0]["plan"]
 
-            try:
-                user = User.objects.get(email=flw_customer_email)
-                user.subscription.status = subs['data'][0]['status']
-                user.subscription.flw_subscription_id = subs['data'][0]['id']
-                pricing = Pricing.objects.get(plan_id=plan_id)
-                user.subscription.pricing = pricing
-                user.subscription.save()
-                print("Upgrade Successfull")
-            except User.DoesNotExist:
-                return Response("User Does not exist", status=status.HTTP_400_BAD_REQUEST)
+                try:
+                    user = User.objects.get(email=flw_customer_email)
+                    user.subscription.status = subs['data'][0]['status']
+                    user.subscription.flw_subscription_id = subs['data'][0]['id']
+                    pricing = Pricing.objects.get(plan_id=plan_id)
+                    user.subscription.pricing = pricing
+                    user.subscription.save()
+                    print("Upgrade Successfull")
+                except User.DoesNotExist:
+                    return Response("User Does not exist", status=status.HTTP_400_BAD_REQUEST)
 
 
-        if event_type == "product.checkout":
-            product_id = resp['data']['meta']['product_id']
-            flw_customer_email = resp['data']['customer']['email']
-            try:
-                user = User.objects.get(email=flw_customer_email)
-                user.userlibrary.products.add(product_id)
-                print("product added")
-            except User.DoesNotExist:
-                return Response("User Does not exist", status=status.HTTP_400_BAD_REQUEST)
+            if event_type == "product.checkout":
+                product_id = resp['data']['meta']['product_id']
+                product = Product.objects.get(id=product_id)
+                flw_customer_email = resp['data']['customer']['email']
+                try:
+                    user = User.objects.get(email=flw_customer_email)
+                    if product.preoder_date is not None:
+                        product.waitlist.users.add(user.id)
+                    user.userlibrary.products.add(product_id)
+                    print("product added")
+                except User.DoesNotExist:
+                    return Response("User Does not exist", status=status.HTTP_400_BAD_REQUEST)
 
-        if event_type == "course.checkout":
-            course_id = resp['data']['meta']['course_id']
-            flw_customer_email = resp['data']['customer']['email']
-            try:
-                user = User.objects.get(email=flw_customer_email)
-                user.userlibrary.courses.add(course_id)
-                print("Course Added")
-            except User.DoesNotExist:
-                return Response("User Does not exist", status=status.HTTP_400_BAD_REQUEST)
-        return Response({"details": "Successfull"}, status=200)
+            if event_type == "course.checkout":
+                course_id = resp['data']['meta']['course_id']
+                flw_customer_email = resp['data']['customer']['email']
+                try:
+                    user = User.objects.get(email=flw_customer_email)
+                    user.userlibrary.courses.add(course_id)
+                    print("Course Added")
+                except User.DoesNotExist:
+                    return Response("User Does not exist", status=status.HTTP_400_BAD_REQUEST)
+            return Response({"details": "Successfull"}, status=200)
+        except Exception as e:
+            return Response({"datails": "transaction not found",
+                            "error": "{}".format(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class CancelSubscription(generics.GenericAPIView):
     serializer_class = CancelSubscriptionSerializer

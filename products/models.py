@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import post_save
 
 PRODUCT_TYPE = [
     ('digital', 'Digital Product'),
@@ -27,6 +28,13 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+class Waitlist(models.Model):
+    product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name="waitlist")
+    users = models.ManyToManyField('users.User', related_name="users")
+
+    def __str__(self):
+        return self.product.name
+
 
 class Course(Product):
     preview_video = models.FileField(null=True, blank=True)
@@ -47,3 +55,10 @@ class Lesson(models.Model):
 
     def __str__(self):
         return self.name
+
+def post_save_waitlist(sender, instance, created, **kwargs):
+    if instance.preoder_date is not None:
+        if created:
+            Waitlist.objects.create(product=instance)
+
+post_save.connect(post_save_waitlist, sender=Product)
