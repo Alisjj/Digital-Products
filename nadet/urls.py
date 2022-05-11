@@ -26,5 +26,4 @@ urlpatterns = [
     path('cancel-subscription/', CancelSubscription.as_view(), name="cancel-subscription"),
     path('create-pricing/', CreatePricingPlan.as_view(), name="create-pricing")
 
-
 ]

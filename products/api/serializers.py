@@ -38,7 +38,7 @@ class PurchasedProductSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
 
-    pricing_tiers = serializers.ListField()
+    # pricing_tiers = serializers.ListField()
     class Meta:
         model = Course
         fields = (
@@ -47,7 +47,6 @@ class CourseSerializer(serializers.ModelSerializer):
             'description',
             'cover',
             'category',
-            'pricing',
             'price',
             'original_price',
             'preoder_date',
