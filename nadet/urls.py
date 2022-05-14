@@ -3,6 +3,9 @@ from django.urls import path, include
 from users.api.views import PasswordResetConfirmView
 from products.api.views import ProductListView, UserProductListView, ProductCreateView, flw_webhook
 from subscription.api.views import CancelSubscription, CreatePricingPlan, PricingView, login_receiver, PaymentVerification
+from rest_framework import routers
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,3 +30,5 @@ urlpatterns = [
     path('create-pricing/', CreatePricingPlan.as_view(), name="create-pricing")
 
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
