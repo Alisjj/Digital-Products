@@ -7,10 +7,15 @@ PRODUCT_TYPE = [
     ('service', 'Service'),
     ('subscription', 'Subscription')
 ]
+class ImageUpload(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField()
+
+    def __str__(self):
+        return self.image.name
 
 class Product(models.Model):
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name="products")
-    cover = models.ImageField(null=True, blank=True)
     name = models.CharField(max_length=230)
     product_type = models.CharField(choices=PRODUCT_TYPE, max_length=15)
     description = models.TextField()

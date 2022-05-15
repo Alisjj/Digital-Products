@@ -4,6 +4,8 @@ from products.models import Course
 
 class ProductSerializer(serializers.ModelSerializer):
 
+    cover_images = serializers.ImageField(read_only=True)
+
     class Meta:
         model = Product
         fields = (
@@ -11,7 +13,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'product_type',
-            'cover',
+            'cover_images',
             'category',
             'content',
             'content_url',

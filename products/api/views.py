@@ -1,7 +1,8 @@
 # from lib2to3.pgen2.tokenize import TokenError
 import os
 from django.shortcuts import get_object_or_404
-from products.models import Course, Product, Section
+from rest_framework.parsers import FileUploadParser, FormParser, MultiPartParser
+from products.models import Course, ImageUpload, Product, Section
 from django.contrib.auth import get_user_model
 import requests
 from django.http import HttpResponse
@@ -58,15 +59,22 @@ class PurchasedProductsView(generics.ListAPIView):
         return self.request.user.userlibrary.products.all()
 
 class ProductCreateView(generics.CreateAPIView):
+    parser_classes = [FormParser, MultiPartParser]
     serializer_class = ProductSerializer
 
     def create(self, request, *args, **kwargs):
+        # file_obj = dict((request.data).lists())['cover']
+        images = request.FILES.getlist('cover_images')
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         if request.data['product_type'] == "subscription":
             if request.user.subscription.pricing.name == "Free":
                 return Response("Upgrade your pricing plan to create a subscription service", status=status.HTTP_401_UNAUTHORIZED)
-        self.perform_create(serializer.save(user=request.user))
+        i = serializer.save(user=request.user)
+        self.perform_create(i)
+        for image in images:
+            ImageUpload.objects.create(product=i, image=image)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
