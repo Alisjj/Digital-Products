@@ -5,6 +5,14 @@ from products.models import Course
 class ProductSerializer(serializers.ModelSerializer):
 
     cover_images = serializers.ImageField(read_only=True)
+    images = serializers.SerializerMethodField(source='get_images')
+    
+    def get_images(self, product):
+        arr = []
+        images = product.images.all()
+        for image in images:
+            arr.append('http://localhost:8000' + str(image.image.url))
+        return arr
 
     class Meta:
         model = Product
@@ -13,6 +21,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'product_type',
+            'images',
             'cover_images',
             'category',
             'content',

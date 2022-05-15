@@ -59,7 +59,6 @@ class PurchasedProductsView(generics.ListAPIView):
         return self.request.user.userlibrary.products.all()
 
 class ProductCreateView(generics.CreateAPIView):
-    parser_classes = [FormParser, MultiPartParser]
     serializer_class = ProductSerializer
 
     def create(self, request, *args, **kwargs):

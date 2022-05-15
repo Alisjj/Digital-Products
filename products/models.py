@@ -29,6 +29,10 @@ class Product(models.Model):
     currency = models.CharField(max_length=4)
     original_price = models.IntegerField(default=0, null=True, blank=True)
     preoder_date = models.DateTimeField(null=True, blank=True)
+    quantity = models.PositiveBigIntegerField(null=True, blank=True)
+    downloadable_file = models.BooleanField(default=True)
+    redirect_url = models.URLField()
+
     
     def __str__(self):
         return self.name
