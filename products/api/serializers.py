@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from products.models import Lesson, Product, Section
+from products.models import ImageUpload, Lesson, Product, Section
 from products.models import Course
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -29,6 +29,9 @@ class ProductSerializer(serializers.ModelSerializer):
             'price',
             'original_price',
             'preoder_date',
+            'quantity',
+            'downloadable_file',
+            'redirect_url',
         )
 
 class PurchasedProductSerializer(serializers.ModelSerializer):
@@ -45,6 +48,7 @@ class PurchasedProductSerializer(serializers.ModelSerializer):
             'price',
             'original_price',
             'preoder_date',
+            
         )
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -69,6 +73,15 @@ class LessonDetailSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Lesson
         fields = ("__all__")
+
+class ImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ImageUpload
+        fields = (
+            'product',
+            'image',
+        )
 
 class SectionSerializer(serializers.ModelSerializer):
 

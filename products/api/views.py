@@ -13,7 +13,7 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
 from subscription.models import Pricing
-from .serializers import LessonDetailSerializer, CourseSerializer, ProductSerializer, PurchasedProductSerializer, SectionSerializer
+from .serializers import ImageSerializer, LessonDetailSerializer, CourseSerializer, ProductSerializer, PurchasedProductSerializer, SectionSerializer
 from django.conf import settings
 from rave_python import Rave
 
@@ -54,7 +54,6 @@ class ProductDestroy(generics.DestroyAPIView):
 
 class PurchasedProductsView(generics.ListAPIView):
     serializer_class = PurchasedProductSerializer
-
     def get_queryset(self):
         return self.request.user.userlibrary.products.all()
 
@@ -64,7 +63,6 @@ class ProductCreateView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         # file_obj = dict((request.data).lists())['cover']
         images = request.FILES.getlist('cover_images')
-
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         if request.data['product_type'] == "subscription":
@@ -73,6 +71,12 @@ class ProductCreateView(generics.CreateAPIView):
         i = serializer.save(user=request.user)
         self.perform_create(i)
         for image in images:
+            dic = {
+                'product': i.id,
+                'image': image
+            }
+            img_serializer = ImageSerializer(data=dic)
+            img_serializer.is_valid(raise_exception=True)
             ImageUpload.objects.create(product=i, image=image)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

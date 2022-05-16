@@ -31,7 +31,7 @@ class Product(models.Model):
     preoder_date = models.DateTimeField(null=True, blank=True)
     quantity = models.PositiveBigIntegerField(null=True, blank=True)
     downloadable_file = models.BooleanField(default=True)
-    redirect_url = models.URLField()
+    redirect_url = models.URLField(null=True, blank=True)
 
     
     def __str__(self):
