@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from products.models import ImageUpload, Lesson, Product, Section
+from products.models import CourseImageUpload, ImageUpload, Lesson, Product, Section
 from products.models import Course
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -35,13 +35,13 @@ class ProductSerializer(serializers.ModelSerializer):
         )
 
 class PurchasedProductSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Product
         fields = (
             'id',
             'name',
             'description',
-            'cover',
             'category',
             'content',
             'content_url',
@@ -53,14 +53,24 @@ class PurchasedProductSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
 
-    # pricing_tiers = serializers.ListField()
+    cover_images = serializers.ImageField(read_only=True)
+    images = serializers.SerializerMethodField(source='get_images')
+    
+    def get_images(self, course):
+        arr = []
+        images = course.course_images.all()
+        for image in images:
+            arr.append('http://localhost:8000' + str(image.image.url))
+        return arr
+
     class Meta:
         model = Course
         fields = (
             'id',
             'name',
             'description',
-            'cover',
+            'cover_images',
+            'images',
             'category',
             'price',
             'original_price',
@@ -80,6 +90,15 @@ class ImageSerializer(serializers.ModelSerializer):
         model = ImageUpload
         fields = (
             'product',
+            'image',
+        )
+
+class CourseImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CourseImageUpload
+        fields = (
+            'course',
             'image',
         )
 

@@ -13,7 +13,7 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
 from subscription.models import Pricing
-from .serializers import ImageSerializer, LessonDetailSerializer, CourseSerializer, ProductSerializer, PurchasedProductSerializer, SectionSerializer
+from .serializers import CourseImageSerializer, ImageSerializer, LessonDetailSerializer, CourseSerializer, ProductSerializer, PurchasedProductSerializer, SectionSerializer
 from django.conf import settings
 from rave_python import Rave
 
@@ -77,7 +77,7 @@ class ProductCreateView(generics.CreateAPIView):
             }
             img_serializer = ImageSerializer(data=dic)
             img_serializer.is_valid(raise_exception=True)
-            ImageUpload.objects.create(product=i, image=image)
+            img_serializer.save()
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -91,6 +91,7 @@ class CourseView(generics.CreateAPIView):
     #     return super().perform_create(serializer)
 
     def create(self, request, *args, **kwargs):
+        images = request.FILES.getlist('cover_images')
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = request.user
@@ -102,7 +103,16 @@ class CourseView(generics.CreateAPIView):
             return Response({"details": "Upgrade your Subscription Plan to add a course"}, status=status.HTTP_401_UNAUTHORIZED)
         elif user_subscription == "Pro Plan" and user_courses.count() == 30:
             return Response({"details": "Upgrade your Subscription Plan to add a course"}, status=status.HTTP_401_UNAUTHORIZED)
-        self.perform_create(serializer.save(user=user))
+        i = serializer.save(user=request.user)
+        self.perform_create(i)
+        for image in images:
+            dic = {
+                'course': i.id,
+                'image': image
+            }
+            img_serializer = CourseImageSerializer(data=dic)
+            img_serializer.is_valid(raise_exception=True)
+            img_serializer.save()
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
