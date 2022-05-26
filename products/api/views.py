@@ -2,7 +2,7 @@
 import os
 from django.shortcuts import get_object_or_404
 from rest_framework.parsers import FileUploadParser, FormParser, MultiPartParser
-from products.models import Course, ImageUpload, Product, Section
+from products.models import Course, ImageUpload, Lesson, Product, Section
 from django.contrib.auth import get_user_model
 import requests
 from django.http import HttpResponse
@@ -137,6 +137,10 @@ class CourseDetail(generics.ListAPIView):
     def get_queryset(self):
         course = get_object_or_404(Course, id=self.kwargs["course_id"])
         return course.sections.all()
+    
+class SectionCreate(generics.CreateAPIView):
+    serializer_class = SectionSerializer
+    queryset = Section.objects.all()
 
 class SectionDetailView(generics.ListAPIView):
     serializer_class = LessonDetailSerializer
@@ -146,6 +150,9 @@ class SectionDetailView(generics.ListAPIView):
         section = get_object_or_404(Section, id=self.kwargs["section_id"], course=course)
         return section.lessons.all()
 
+class LessonCreate(generics.CreateAPIView):
+    serializer_class = LessonDetailSerializer
+    queryset = Lesson.objects.all()
         
         
     

@@ -31,6 +31,7 @@ class Subscription(models.Model):
 
 class CustomPricing(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    # course = models.ForeignKey(settings.AUTH_USER_MODE)
     plan_id = models.CharField(max_length=100)
     name = models.CharField(max_length=50)
     price = models.PositiveIntegerField(default=0)

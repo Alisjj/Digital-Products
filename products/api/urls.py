@@ -17,6 +17,8 @@ urlpatterns = [
     path('course/<int:pk>/', views.CourseRetrieve.as_view(), name="course-retrieve"),
     path('course/<int:course_id>/sections/', views.CourseDetail.as_view(), name="course_detail"),
     path('course/<int:course_id>/sections/<int:section_id>/', views.SectionDetailView.as_view(), name="section_detail"),
+    path('section-create/', views.SectionCreate.as_view(), name="create-section"),
+    path('lesson-create/', views.LessonCreate.as_view(), name="lesson-section"),
 
 ]
 
