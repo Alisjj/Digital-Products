@@ -26,7 +26,7 @@ This project is a comprehensive platform for managing and distributing digital p
 1. **Clone the repository**:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Alisjj/Digital-Products.git
    ```
 
 2. **Install dependencies**:
