@@ -12,17 +12,6 @@ This project is a comprehensive platform for managing and distributing digital p
 - **Media Handling**: Securely upload, manage, and deliver digital files (e.g., e-books, software, videos) to users.
 - **Scalable Infrastructure**: The project is designed with scalability in mind, supporting large numbers of users and products.
 
-## Project Structure
-
-- **`manage.py`**: Django's command-line utility for administrative tasks. You will use it to run the server, migrate databases, and manage your application.
-- **`products/`**: Contains the core logic for digital product management. This includes models for products, views for product-related pages, and templates for rendering product lists and details.
-- **`users/`**: Handles user accounts, authentication, and profile management. This includes user models, registration and login views, and templates for user account-related pages.
-- **`subscription/`**: Manages subscription plans and user subscription states. Includes the logic for creating subscription tiers, billing cycles, and integration with payment gateways.
-- **`templates/`**: Contains HTML templates used across the platform, following the Django templating system for dynamic content rendering.
-- **`static/`** & **`staticfiles/`**: Holds static assets like CSS, JavaScript, and images. These files are used to style the frontend and provide interactivity.
-- **`media/`**: Stores uploaded media files, including digital products like e-books, videos, and software files, which are delivered to users upon purchase.
-- **`.vscode/`**: Configuration files for Visual Studio Code to help streamline development within the IDE.
-- **`LICENCE`**: The license file governing the terms under which this project can be used, copied, or modified.
 
 ## Requirements
 
@@ -114,6 +103,3 @@ We welcome contributions from the community. If you'd like to contribute, please
 4. Push your branch (`git push origin feature-branch`).
 5. Create a pull request.
 
-## License
-
-This project is licensed under the terms of the [LICENSE](LICENCE) file. You are free to use, modify, and distribute the software within the terms of the license.
